@@ -8,6 +8,8 @@ using Autotest.Platform.Domain.Enums;
 using Autotest.Platform.API.DTOs.Auth;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Autotest.Platform.Infrastructure.Services
 {
@@ -28,9 +30,10 @@ namespace Autotest.Platform.Infrastructure.Services
         private readonly IJwtService _jwtService;
         private readonly IPasswordHasher _passwordHasher;
         private readonly IConfiguration _configuration;
+        private readonly ITelegramBotService _telegramBotService;
 
         // Tasdiqlash kodini qayta yuborish uchun minimal vaqt
-        private readonly TimeSpan _codeResendWindow = TimeSpan.FromMinutes(2);
+        private readonly TimeSpan _codeResendWindow = TimeSpan.FromMinutes(1);
         
         // Tasdiqlash kodining amal qilish muddati
         private readonly TimeSpan _codeExpiryWindow = TimeSpan.FromMinutes(5);
@@ -40,13 +43,15 @@ namespace Autotest.Platform.Infrastructure.Services
             IVerificationCodeRepository codeRepository,
             IJwtService jwtService,
             IPasswordHasher passwordHasher,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            ITelegramBotService telegramBotService)
         {
             _userRepository = userRepository;
             _codeRepository = codeRepository;
             _jwtService = jwtService;
             _passwordHasher = passwordHasher;
             _configuration = configuration;
+            _telegramBotService = telegramBotService;
         }
 
         public async Task<(bool success, string message)> StartRegistrationAsync(RegisterRequest request)
@@ -63,6 +68,13 @@ namespace Autotest.Platform.Infrastructure.Services
                 return (false, $"Iltimos, {_codeResendWindow.TotalMinutes} daqiqa kutib turing");
             }
 
+            // TelegramUser ni tekshirish
+            var telegramUser = await _userRepository.GetTelegramUserByPhoneNumberAsync(request.PhoneNumber);
+            if (telegramUser == null)
+            {
+                return (false, "Iltimos, avval Telegram bot orqali ro'yxatdan o'ting");
+            }
+
             // Yangi tasdiqlash kodini yaratish
             var verificationCode = new VerificationCode
             {
@@ -75,11 +87,16 @@ namespace Autotest.Platform.Infrastructure.Services
             // Kodni saqlash
             await _codeRepository.CreateAsync(verificationCode);
 
-            // TODO: Bu yerda SMS yoki Telegram orqali kodni yuborish kerak
-            // Hozircha faqat console ga chiqaramiz
-            Console.WriteLine($"Verification code for {request.PhoneNumber}: {verificationCode.Code}");
+            // Telegram orqali kodni yuborish
+            var chatId = long.Parse(telegramUser.ChatId);
+            var sent = await _telegramBotService.SendVerificationCodeAsync(chatId, verificationCode.Code);
 
-            return (true, "Tasdiqlash kodi yuborildi");
+            if (!sent)
+            {
+                return (false, "Tasdiqlash kodini yuborishda xatolik yuz berdi. Iltimos, qayta urinib ko'ring");
+            }
+
+            return (true, "Tasdiqlash kodi Telegram orqali yuborildi");
         }
 
         public async Task<(TokenResponse tokens, UserResponse user)> CompleteRegistrationAsync(VerifyCodeRequest request)
@@ -163,6 +180,13 @@ namespace Autotest.Platform.Infrastructure.Services
                 return (false, $"Iltimos, {_codeResendWindow.TotalMinutes} daqiqa kutib turing");
             }
 
+            // TelegramUser ni tekshirish
+            var telegramUser = await _userRepository.GetTelegramUserByPhoneNumberAsync(request.PhoneNumber);
+            if (telegramUser == null)
+            {
+                return (false, "Iltimos, avval Telegram bot orqali ro'yxatdan o'ting");
+            }
+
             // Yangi tasdiqlash kodini yaratish
             var verificationCode = new VerificationCode
             {
@@ -175,10 +199,16 @@ namespace Autotest.Platform.Infrastructure.Services
 
             await _codeRepository.CreateAsync(verificationCode);
 
-            // TODO: Bu yerda SMS yoki Telegram orqali kodni yuborish kerak
-            Console.WriteLine($"Login verification code for {request.PhoneNumber}: {verificationCode.Code}");
+            // Telegram orqali kodni yuborish
+            var chatId = long.Parse(telegramUser.ChatId);
+            var sent = await _telegramBotService.SendVerificationCodeAsync(chatId, verificationCode.Code);
 
-            return (true, "Tasdiqlash kodi yuborildi");
+            if (!sent)
+            {
+                return (false, "Tasdiqlash kodini yuborishda xatolik yuz berdi. Iltimos, qayta urinib ko'ring");
+            }
+
+            return (true, "Tasdiqlash kodi Telegram orqali yuborildi");
         }
 
         public async Task<(TokenResponse tokens, UserResponse user)> CompleteLoginAsync(VerifyCodeRequest request)

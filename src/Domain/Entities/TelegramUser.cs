@@ -15,19 +15,12 @@ namespace Autotest.Platform.Domain.Entities
         public Guid Id { get; set; }
 
         [Required]
-        public long ChatId { get; set; }
-
-        public string Username { get; set; }
+        public string ChatId { get; set; }
 
         [Required]
-        public string FirstName { get; set; }
-
-        public string LastName { get; set; }
-
         [Phone]
+        [MaxLength(15)]
         public string PhoneNumber { get; set; }
-
-        public bool IsPhoneNumberConfirmed { get; set; }
 
         public DateTime CreatedAt { get; private set; }
 

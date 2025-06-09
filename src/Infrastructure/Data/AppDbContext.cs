@@ -71,36 +71,33 @@ namespace Autotest.Platform.Infrastructure.Data
                     .IsRequired();
             });
 
-
+            // TelegramUser konfiguratsiyasi
             modelBuilder.Entity<TelegramUser>(entity =>
-       {
-           entity.HasKey(e => e.Id);
+            {
+                entity.HasKey(e => e.Id);
 
-           entity.Property(e => e.ChatId)
-               .IsRequired();
+                entity.Property(e => e.ChatId)
+                    .IsRequired();
 
-           entity.HasIndex(e => e.ChatId)
-               .IsUnique();
+                entity.Property(e => e.PhoneNumber)
+                    .IsRequired()
+                    .HasMaxLength(15);
 
-           entity.Property(e => e.PhoneNumber)
-               .HasMaxLength(15);
+                entity.HasIndex(e => e.PhoneNumber)
+                    .IsUnique();
 
-           entity.Property(e => e.FirstName)
-               .IsRequired()
-               .HasMaxLength(50);
+                entity.HasIndex(e => e.ChatId)
+                    .IsUnique();
 
-           entity.Property(e => e.LastName)
-               .HasMaxLength(50);
+                entity.Property(e => e.CreatedAt)
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-           entity.Property(e => e.CreatedAt)
-               .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-           // User bilan relationship
-           entity.HasOne(e => e.User)
-               .WithOne()
-               .HasForeignKey<TelegramUser>(e => e.UserId)
-               .OnDelete(DeleteBehavior.SetNull);
-       });
+                // User bilan relationship
+                entity.HasOne(e => e.User)
+                    .WithOne()
+                    .HasForeignKey<TelegramUser>(e => e.UserId)
+                    .OnDelete(DeleteBehavior.SetNull);
+            });
         }
     }
 }

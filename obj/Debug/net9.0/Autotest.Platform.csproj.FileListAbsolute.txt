@@ -175,3 +175,4 @@ F:\Autotest.Platform\obj\Debug\net9.0\ref\Autotest.Platform.dll
 F:\Autotest.Platform\bin\Debug\net9.0\Microsoft.AspNetCore.JsonPatch.dll
 F:\Autotest.Platform\bin\Debug\net9.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
 F:\Autotest.Platform\bin\Debug\net9.0\Newtonsoft.Json.Bson.dll
+F:\Autotest.Platform\obj\Debug\net9.0\Autotest.Platform.sourcelink.json

@@ -193,7 +193,7 @@ namespace Autotest.Platform.Infrastructure.Services
 
         private async Task HandleHelpCommandAsync(Message message)
         {
-            var helpMessage =
+            var helpMessage = 
                 "*AutoTest.uz Bot Yordam*\n\n" +
                 "🤖 Bot buyruqlari:\n\n" +
                 "• /start - Botni qayta ishga tushirish\n" +
@@ -218,124 +218,92 @@ namespace Autotest.Platform.Infrastructure.Services
 
         private async Task HandleProfileCommandAsync(Message message)
         {
-            try
+            // Foydalanuvchi telefon raqamini tekshirish
+            if (message.Contact is null)
             {
-                if (message?.Chat == null)
-                {
-                    _logger.LogWarning("Message or chat is null");
-                    return;
-                }
-
-                var user = await _userRepository.GetByTelegramChatIdAsync(message.Chat.Id.ToString());
-
-                if (user == null)
-                {
-                    await RequestPhoneNumberAsync(message.Chat.Id);
-                    return;
-                }
-
-                var profileMessage =
-                    "*Sizning ma'lumotlaringiz:*\n\n" +
-                    $"📱 Telefon: {user.PhoneNumber}\n" +
-                    $"👤 Ism: {message.From?.FirstName ?? "Ko'rsatilmagan"}\n" +
-                    $"✅ Status: {(user.IsVerified ? "Tasdiqlangan" : "Tasdiqlanmagan")}\n\n" +
-                    "Platformaga kirish uchun: https://autotest.uz";
-
-                await _botClient.SendTextMessageAsync(
-                    chatId: message.Chat.Id,
-                    text: profileMessage,
-                    parseMode: ParseMode.Markdown,
-                    cancellationToken: CancellationToken.None
-                );
+                await RequestPhoneNumberAsync(message.Chat.Id);
+                return;
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in HandleProfileCommandAsync");
 
-                await _botClient.SendTextMessageAsync(
-                    chatId: message.Chat.Id,
-                    text: "🚫 Profil ma'lumotlarini olishda xatolik yuz berdi.",
-                    cancellationToken: CancellationToken.None
-                );
-            }
+            var profileMessage = 
+                "*Sizning ma'lumotlaringiz:*\n\n" +
+                $"📱 Telefon: {message.Contact.PhoneNumber}\n" +
+                $"👤 Ism: {message.From.FirstName}\n" +
+                "✅ Status: Telefon raqam ulangan\n\n" +
+                "Platformaga kirish uchun: https://autotest.uz";
+
+            await _botClient.SendTextMessageAsync(
+                chatId: message.Chat.Id,
+                text: profileMessage,
+                parseMode: ParseMode.Markdown
+            );
         }
 
         private async Task HandleContactMessageAsync(Message message)
         {
             try
             {
-                if (message?.Contact == null)
-                {
-                    _logger.LogWarning("Contact information is missing");
-                    await RequestPhoneNumberAsync(message.Chat.Id);
-                    return;
-                }
-
                 var phoneNumber = NormalizePhoneNumber(message.Contact.PhoneNumber);
-                _logger.LogInformation("Processing contact for phone number: {Phone}", phoneNumber);
 
                 var success = await _userRepository.SaveTelegramInfoAsync(
                     phoneNumber,
                     message.Chat.Id.ToString()
                 );
 
-                ReplyKeyboardMarkup keyboard;
-                string responseMessage;
+                var keyboard = new ReplyKeyboardMarkup(
+                    new[]
+                    {
+                        new[] { new KeyboardButton("/profile") },
+                        new[] { new KeyboardButton("/help") }
+                    }
+                )
+                {
+                    ResizeKeyboard = true
+                };
 
                 if (success)
                 {
-                    keyboard = new ReplyKeyboardMarkup(
-                        new[]
-                        {
-                    new[] { new KeyboardButton("/profile") },
-                    new[] { new KeyboardButton("/help") }
-                        }
-                    )
-                    {
-                        ResizeKeyboard = true
-                    };
-
-                    responseMessage =
-                        "✅ Telefon raqamingiz muvaffaqiyatli saqlandi.\n\n" +
+                    var responseMessage = "✅ Telefon raqamingiz muvaffaqiyatli saqlandi.\n\n" +
                         "Endi siz platformada ro'yxatdan o'tishingiz yoki tizimga kirishingiz mumkin.\n\n" +
                         "Platformaga o'tish uchun: https://autotest.uz";
+
+                    await _botClient.SendTextMessageAsync(
+                        chatId: message.Chat.Id,
+                        text: responseMessage,
+                        replyMarkup: keyboard
+                    );
                 }
                 else
                 {
-                    keyboard = new ReplyKeyboardMarkup(
-                        new[]
-                        {
-                    new[]
-                    {
-                        KeyboardButton.WithRequestContact("📱 Telefon raqamni qayta ulash")
-                    }
-                        }
-                    )
-                    {
-                        ResizeKeyboard = true
-                    };
+                    _logger.LogError("Failed to save telegram info for phone {Phone} and chat {ChatId}", 
+                        phoneNumber, message.Chat.Id);
 
-                    responseMessage =
-                        "❌ Xatolik yuz berdi.\n" +
-                        "Iltimos, telefon raqamingizni qayta ulashga urinib ko'ring.";
+                    var errorMessage = "❌ Kechirasiz, xatolik yuz berdi.\n\n" +
+                        "Iltimos, quyidagi qadamlarni bajarib ko'ring:\n" +
+                        "1. Botni qayta ishga tushiring (/start)\n" +
+                        "2. Telefon raqamingizni qayta ulashing\n" +
+                        "3. Agar muammo davom etsa, support@autotest.uz ga xabar bering";
+
+                    await _botClient.SendTextMessageAsync(
+                        chatId: message.Chat.Id,
+                        text: errorMessage,
+                        replyMarkup: keyboard
+                    );
                 }
-
-                await _botClient.SendTextMessageAsync(
-                    chatId: message.Chat.Id,
-                    text: responseMessage,
-                    replyMarkup: keyboard,
-                    parseMode: ParseMode.Markdown,
-                    cancellationToken: CancellationToken.None
-                );
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in HandleContactMessageAsync");
+                _logger.LogError(ex, "Error handling contact message for chat {ChatId}", message.Chat.Id);
+                
+                var errorMessage = "❌ Kechirasiz, xatolik yuz berdi.\n\n" +
+                    "Iltimos, quyidagi qadamlarni bajarib ko'ring:\n" +
+                    "1. Botni qayta ishga tushiring (/start)\n" +
+                    "2. Telefon raqamingizni qayta ulashing\n" +
+                    "3. Agar muammo davom etsa, support@autotest.uz ga xabar bering";
 
                 await _botClient.SendTextMessageAsync(
                     chatId: message.Chat.Id,
-                    text: "🚫 Tizimda xatolik yuz berdi. Iltimos, keyinroq qayta urinib ko'ring.",
-                    cancellationToken: CancellationToken.None
+                    text: errorMessage
                 );
             }
         }

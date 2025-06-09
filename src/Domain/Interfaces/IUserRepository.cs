@@ -1,3 +1,4 @@
+// src/Domain/Interfaces/IUserRepository.cs
 using Autotest.Platform.Domain.Entities;
 
 namespace Autotest.Platform.Domain.Interfaces
@@ -10,7 +11,8 @@ namespace Autotest.Platform.Domain.Interfaces
         Task<User> CreateAsync(User user);
         Task UpdateAsync(User user);
         Task<bool> SaveTelegramInfoAsync(string phoneNumber, string chatId);
+        Task<User> GetByTelegramChatIdAsync(string chatId);
         Task<bool> DeleteAsync(Guid id);
-        Task<User> GetByTelegramChatIdAsync(string chatId); // Yangi metod
+        Task<TelegramUser> GetTelegramUserByPhoneNumberAsync(string phoneNumber);
     }
 }

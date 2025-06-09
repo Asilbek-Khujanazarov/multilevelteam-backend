@@ -6,11 +6,28 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Autotest.Platform.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate1 : Migration
+    public partial class InitisssalCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "RegisterRequests",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Gender = table.Column<int>(type: "int", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RegisterRequests", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
@@ -38,13 +55,9 @@ namespace Autotest.Platform.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ChatId = table.Column<long>(type: "bigint", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    ChatId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
-                    IsPhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
                     LastInteractionAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
@@ -55,8 +68,7 @@ namespace Autotest.Platform.Migrations
                         name: "FK_TelegramUsers_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -90,6 +102,12 @@ namespace Autotest.Platform.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_TelegramUsers_PhoneNumber",
+                table: "TelegramUsers",
+                column: "PhoneNumber",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TelegramUsers_UserId",
                 table: "TelegramUsers",
                 column: "UserId",
@@ -111,6 +129,9 @@ namespace Autotest.Platform.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "RegisterRequests");
+
             migrationBuilder.DropTable(
                 name: "TelegramUsers");
 

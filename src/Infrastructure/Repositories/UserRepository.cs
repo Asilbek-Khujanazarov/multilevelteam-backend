@@ -1,19 +1,20 @@
+// src/Infrastructure/Repositories/UserRepository.cs
 using Microsoft.EntityFrameworkCore;
 using Autotest.Platform.Domain.Entities;
 using Autotest.Platform.Domain.Interfaces;
 using Autotest.Platform.Infrastructure.Data;
+using Microsoft.Extensions.Logging;
 
 namespace Autotest.Platform.Infrastructure.Repositories
 {
     public class UserRepository : IUserRepository
     {
         private readonly AppDbContext _context;
-        private readonly ILogger<UserRepository> _logger;
+        private ILogger<UserRepository> _logger;
 
-        public UserRepository(AppDbContext context, ILogger<UserRepository> logger)
+        public UserRepository(AppDbContext context)
         {
             _context = context;
-            _logger = logger;
         }
 
         public async Task<User> GetByIdAsync(Guid id)
@@ -53,35 +54,74 @@ namespace Autotest.Platform.Infrastructure.Repositories
         {
             try
             {
-                var user = await GetByPhoneNumberAsync(phoneNumber);
+                // Telefon raqamni normalizatsiya qilish
+                phoneNumber = NormalizePhoneNumber(phoneNumber);
 
-                if (user == null)
+                // Mavjud TelegramUser ni tekshirish
+                var telegramUser = await _context.TelegramUsers
+                    .FirstOrDefaultAsync(t => t.PhoneNumber == phoneNumber || t.ChatId == chatId);
+
+                if (telegramUser == null)
                 {
-                    // Yangi foydalanuvchi yaratamiz
-                    user = new User
+                    // Yangi TelegramUser yaratish
+                    telegramUser = new TelegramUser
                     {
-                        Id = Guid.NewGuid(),
                         PhoneNumber = phoneNumber,
-                        TelegramChatId = chatId,
-                        RegisteredDate = DateTime.UtcNow,
-                        IsVerified = false
+                        ChatId = chatId,
+                        LastInteractionAt = DateTime.UtcNow
                     };
-                    await CreateAsync(user);
+                    _context.TelegramUsers.Add(telegramUser);
                 }
                 else
                 {
-                    // Mavjud foydalanuvchini yangilaymiz
-                    user.TelegramChatId = chatId;
-                    await UpdateAsync(user);
+                    // Mavjud TelegramUser ni yangilash
+                    telegramUser.PhoneNumber = phoneNumber;
+                    telegramUser.ChatId = chatId;
+                    telegramUser.LastInteractionAt = DateTime.UtcNow;
                 }
 
+                await _context.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)
             {
+                _logger = LoggerFactory.Create(builder => builder.AddConsole())
+                    .CreateLogger<UserRepository>();
                 _logger.LogError(ex, "Error saving telegram info for phone {Phone}", phoneNumber);
                 return false;
             }
+        }
+
+        public async Task<TelegramUser> GetTelegramUserByPhoneNumberAsync(string phoneNumber)
+        {
+            return await _context.TelegramUsers
+                .FirstOrDefaultAsync(t => t.PhoneNumber == phoneNumber);
+        }
+
+        private string NormalizePhoneNumber(string phoneNumber)
+        {
+            // Telefon raqamdan barcha bo'sh joylar va maxsus belgilarni olib tashlash
+            phoneNumber = new string(phoneNumber.Where(char.IsDigit).ToArray());
+
+            // Agar raqam 998 bilan boshlanmasa, qo'shish
+            if (phoneNumber.Length == 9)
+            {
+                phoneNumber = "998" + phoneNumber;
+            }
+            // Agar raqam 8 bilan boshlansa, 998 bilan almashtirish
+            else if (phoneNumber.StartsWith("8") && phoneNumber.Length == 10)
+            {
+                phoneNumber = "998" + phoneNumber.Substring(1);
+            }
+
+            return phoneNumber;
+        }
+
+        public async Task<User> GetByTelegramChatIdAsync(string chatId)
+        {
+            return await _context.Users
+                .Include(u => u.VerificationCodes)
+                .FirstOrDefaultAsync(u => u.TelegramChatId == chatId);
         }
 
         public async Task<bool> DeleteAsync(Guid id)
@@ -94,13 +134,6 @@ namespace Autotest.Platform.Infrastructure.Repositories
                 return true;
             }
             return false;
-        }
-
-        public async Task<User> GetByTelegramChatIdAsync(string chatId)
-        {
-            return await _context.Users
-                .Include(u => u.VerificationCodes)
-                .FirstOrDefaultAsync(u => u.TelegramChatId == chatId);
         }
     }
 }

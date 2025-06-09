@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Autotest.Platform.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250608183540_InitialCreate1")]
-    partial class InitialCreate1
+    [Migration("20250609122115_InitisssalCreate")]
+    partial class InitisssalCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,29 +31,18 @@ namespace Autotest.Platform.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<long>("ChatId")
-                        .HasColumnType("bigint");
+                    b.Property<string>("ChatId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<bool>("IsPhoneNumberConfirmed")
-                        .HasColumnType("bit");
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<DateTime?>("LastInteractionAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
@@ -63,13 +52,12 @@ namespace Autotest.Platform.Migrations
                     b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ChatId")
+                        .IsUnique();
+
+                    b.HasIndex("PhoneNumber")
                         .IsUnique();
 
                     b.HasIndex("UserId")
@@ -177,12 +165,45 @@ namespace Autotest.Platform.Migrations
                     b.ToTable("VerificationCodes");
                 });
 
+            modelBuilder.Entity("Autotest.Platform.Infrastructure.Data.RegisterRequestEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Gender")
+                        .HasColumnType("int");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RegisterRequests");
+                });
+
             modelBuilder.Entity("Autotest.Platform.Domain.Entities.TelegramUser", b =>
                 {
                     b.HasOne("Autotest.Platform.Domain.Entities.User", "User")
                         .WithOne()
                         .HasForeignKey("Autotest.Platform.Domain.Entities.TelegramUser", "UserId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("User");
                 });
