@@ -18,9 +18,12 @@ namespace Autotest.Platform.Infrastructure.Services
         Task<(bool success, string message)> StartRegistrationAsync(RegisterRequest request);
         Task<(TokenResponse tokens, UserResponse user)> CompleteRegistrationAsync(VerifyCodeRequest request);
         Task<(bool success, string message)> StartLoginAsync(LoginRequest request);
-        Task<(TokenResponse tokens, UserResponse user)> CompleteLoginAsync(VerifyCodeRequest request);
+        Task<(TokenResponse tokens, UserResponse user)> CompleteLoginAsync(LoginVerifyRequest request);
         Task<TokenResponse> RefreshTokenAsync(string accessToken, string refreshToken);
         Task<bool> RevokeTokenAsync(string phoneNumber);
+        Task<(bool success, string message)> ChangePasswordAsync(string phoneNumber, ChangePasswordRequest request);
+        Task<(bool success, string message)> ForgotPasswordAsync(ForgotPasswordRequest request);
+        Task<(bool success, string message)> ResetPasswordAsync(ResetPasswordRequest request);
     }
 
     public class AuthService : IAuthService
@@ -106,7 +109,12 @@ namespace Autotest.Platform.Infrastructure.Services
                 request.PhoneNumber, 
                 VerificationPurpose.Registration);
 
-            if (verificationCode == null || verificationCode.Code != request.Code)
+            if (verificationCode == null)
+            {
+                throw new ApplicationException("Tasdiqlash kodi topilmadi");
+            }
+
+            if (verificationCode.Code != request.Code)
             {
                 throw new ApplicationException("Noto'g'ri tasdiqlash kodi");
             }
@@ -121,32 +129,39 @@ namespace Autotest.Platform.Infrastructure.Services
                 throw new ApplicationException("Tasdiqlash kodi allaqachon ishlatilgan");
             }
 
+            // Token va refresh token yaratish
+            var refreshToken = _jwtService.GenerateRefreshToken();
+            var refreshTokenExpiryTime = _jwtService.GetRefreshTokenExpiryTime();
+
             // Foydalanuvchini yaratish
             var user = new User
             {
                 PhoneNumber = request.PhoneNumber,
-                FirstName = verificationCode.User.FirstName,
-                LastName = verificationCode.User.LastName,
-                Gender = verificationCode.User.Gender,
-                PasswordHash = verificationCode.User.PasswordHash,
-                IsVerified = true
+                PasswordHash = _passwordHasher.HashPassword(request.Password),
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Gender = request.Gender,
+                IsVerified = true,
+                RefreshToken = refreshToken,
+                RefreshTokenExpiryTime = refreshTokenExpiryTime
             };
 
             await _userRepository.CreateAsync(user);
+
+            // TelegramUser bilan bog'lash
+            var telegramUser = await _userRepository.GetTelegramUserByPhoneNumberAsync(request.PhoneNumber);
+            if (telegramUser != null)
+            {
+                telegramUser.UserId = user.Id;
+                await _userRepository.UpdateTelegramUserAsync(telegramUser);
+            }
 
             // Kodni ishlatilgan deb belgilash
             verificationCode.IsUsed = true;
             await _codeRepository.UpdateAsync(verificationCode);
 
-            // Token va refresh token yaratish
+            // Access token yaratish
             var accessToken = _jwtService.GenerateAccessToken(user);
-            var refreshToken = _jwtService.GenerateRefreshToken();
-            var refreshTokenExpiryTime = _jwtService.GetRefreshTokenExpiryTime();
-
-            // Refresh tokenni saqlash
-            user.RefreshToken = refreshToken;
-            user.RefreshTokenExpiryTime = refreshTokenExpiryTime;
-            await _userRepository.UpdateAsync(user);
 
             return (
                 new TokenResponse
@@ -211,13 +226,19 @@ namespace Autotest.Platform.Infrastructure.Services
             return (true, "Tasdiqlash kodi Telegram orqali yuborildi");
         }
 
-        public async Task<(TokenResponse tokens, UserResponse user)> CompleteLoginAsync(VerifyCodeRequest request)
+        public async Task<(TokenResponse tokens, UserResponse user)> CompleteLoginAsync(LoginVerifyRequest request)
         {
+            // Tasdiqlash kodini tekshirish
             var verificationCode = await _codeRepository.GetLatestCodeAsync(
                 request.PhoneNumber, 
                 VerificationPurpose.Login);
 
-            if (verificationCode == null || verificationCode.Code != request.Code)
+            if (verificationCode == null)
+            {
+                throw new ApplicationException("Tasdiqlash kodi topilmadi");
+            }
+
+            if (verificationCode.Code != request.Code)
             {
                 throw new ApplicationException("Noto'g'ri tasdiqlash kodi");
             }
@@ -232,14 +253,22 @@ namespace Autotest.Platform.Infrastructure.Services
                 throw new ApplicationException("Tasdiqlash kodi allaqachon ishlatilgan");
             }
 
+            // Foydalanuvchini tekshirish
             var user = await _userRepository.GetByPhoneNumberAsync(request.PhoneNumber);
             if (user == null)
             {
                 throw new ApplicationException("Foydalanuvchi topilmadi");
             }
 
-            // Login vaqtini yangilash
-            user.LastLoginDate = DateTime.UtcNow;
+            // Parolni tekshirish
+            if (!_passwordHasher.VerifyPassword(request.Password, user.PasswordHash))
+            {
+                throw new ApplicationException("Noto'g'ri parol");
+            }
+
+            // Kodni ishlatilgan deb belgilash
+            verificationCode.IsUsed = true;
+            await _codeRepository.UpdateAsync(verificationCode);
 
             // Token va refresh token yaratish
             var accessToken = _jwtService.GenerateAccessToken(user);
@@ -249,11 +278,8 @@ namespace Autotest.Platform.Infrastructure.Services
             // Refresh tokenni saqlash
             user.RefreshToken = refreshToken;
             user.RefreshTokenExpiryTime = refreshTokenExpiryTime;
+            user.LastLoginDate = DateTime.UtcNow;
             await _userRepository.UpdateAsync(user);
-
-            // Kodni ishlatilgan deb belgilash
-            verificationCode.IsUsed = true;
-            await _codeRepository.UpdateAsync(verificationCode);
 
             return (
                 new TokenResponse
@@ -312,6 +338,121 @@ namespace Autotest.Platform.Infrastructure.Services
             await _userRepository.UpdateAsync(user);
 
             return true;
+        }
+
+        public async Task<(bool success, string message)> ChangePasswordAsync(string phoneNumber, ChangePasswordRequest request)
+        {
+            // Foydalanuvchini tekshirish
+            var user = await _userRepository.GetByPhoneNumberAsync(phoneNumber);
+            if (user == null)
+            {
+                return (false, "Foydalanuvchi topilmadi");
+            }
+
+            // Joriy parolni tekshirish
+            if (!_passwordHasher.VerifyPassword(request.CurrentPassword, user.PasswordHash))
+            {
+                return (false, "Joriy parol noto'g'ri");
+            }
+
+            // Yangi parolni tekshirish
+            if (request.NewPassword != request.ConfirmNewPassword)
+            {
+                return (false, "Yangi parol va tasdiqlash paroli mos kelmadi");
+            }
+
+            // Yangi parolni saqlash
+            user.PasswordHash = _passwordHasher.HashPassword(request.NewPassword);
+            await _userRepository.UpdateAsync(user);
+
+            return (true, "Parol muvaffaqiyatli o'zgartirildi");
+        }
+
+        public async Task<(bool success, string message)> ForgotPasswordAsync(ForgotPasswordRequest request)
+        {
+            // Foydalanuvchini tekshirish
+            var user = await _userRepository.GetByPhoneNumberAsync(request.PhoneNumber);
+            if (user == null)
+            {
+                return (false, "Foydalanuvchi topilmadi");
+            }
+
+            // Telegram foydalanuvchisini tekshirish
+            var telegramUser = await _userRepository.GetTelegramUserByPhoneNumberAsync(request.PhoneNumber);
+            if (telegramUser == null)
+            {
+                return (false, "Telegram orqali ro'yxatdan o'tilmagan");
+            }
+
+            // Tasdiqlash kodini yaratish
+            var code = GenerateVerificationCode();
+            var verificationCode = new VerificationCode
+            {
+                PhoneNumber = request.PhoneNumber,
+                Code = code,
+                Purpose = VerificationPurpose.PasswordReset,
+                ExpiryTime = DateTime.UtcNow.AddMinutes(5),
+                IsUsed = false
+            };
+
+            await _codeRepository.CreateAsync(verificationCode);
+
+            // Telegram orqali kodni yuborish
+            var chatId = long.Parse(telegramUser.ChatId);
+            await _telegramBotService.SendVerificationCodeAsync(chatId, code);
+
+            return (true, "Tasdiqlash kodi Telegram orqali yuborildi");
+        }
+
+        public async Task<(bool success, string message)> ResetPasswordAsync(ResetPasswordRequest request)
+        {
+            // Tasdiqlash kodini tekshirish
+            var verificationCode = await _codeRepository.GetLatestCodeAsync(
+                request.PhoneNumber, 
+                VerificationPurpose.PasswordReset);
+
+            if (verificationCode == null)
+            {
+                return (false, "Tasdiqlash kodi topilmadi");
+            }
+
+            if (verificationCode.Code != request.Code)
+            {
+                return (false, "Noto'g'ri tasdiqlash kodi");
+            }
+
+            if (verificationCode.ExpiryTime < DateTime.UtcNow)
+            {
+                return (false, "Tasdiqlash kodi muddati tugagan");
+            }
+
+            if (verificationCode.IsUsed)
+            {
+                return (false, "Tasdiqlash kodi allaqachon ishlatilgan");
+            }
+
+            // Foydalanuvchini tekshirish
+            var user = await _userRepository.GetByPhoneNumberAsync(request.PhoneNumber);
+            if (user == null)
+            {
+                return (false, "Foydalanuvchi topilmadi");
+            }
+
+            // Yangi parolni tekshirish
+            if (request.NewPassword != request.ConfirmNewPassword)
+            {
+                return (false, "Yangi parol va tasdiqlash paroli mos kelmadi");
+            }
+
+            // Yangi parolni saqlash
+            user.PasswordHash = _passwordHasher.HashPassword(request.NewPassword);
+            await _userRepository.UpdateAsync(user);
+
+            // Kodni ishlatilgan deb belgilash
+            verificationCode.IsUsed = true;
+            await _codeRepository.UpdateAsync(verificationCode);
+
+            return (true, "Parol muvaffaqiyatli o'zgartirildi");
         }
 
         private string GenerateVerificationCode()

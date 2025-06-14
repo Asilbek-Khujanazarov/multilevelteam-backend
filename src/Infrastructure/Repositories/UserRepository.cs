@@ -95,7 +95,8 @@ namespace Autotest.Platform.Infrastructure.Repositories
         public async Task<TelegramUser> GetTelegramUserByPhoneNumberAsync(string phoneNumber)
         {
             return await _context.TelegramUsers
-                .FirstOrDefaultAsync(t => t.PhoneNumber == phoneNumber);
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber);
         }
 
         private string NormalizePhoneNumber(string phoneNumber)
@@ -121,7 +122,7 @@ namespace Autotest.Platform.Infrastructure.Repositories
         {
             return await _context.Users
                 .Include(u => u.VerificationCodes)
-                .FirstOrDefaultAsync(u => u.TelegramChatId == chatId);
+                .FirstOrDefaultAsync(u => u.TelegramUser.ChatId == chatId);
         }
 
         public async Task<bool> DeleteAsync(Guid id)
@@ -134,6 +135,19 @@ namespace Autotest.Platform.Infrastructure.Repositories
                 return true;
             }
             return false;
+        }
+
+        public async Task UpdateTelegramUserAsync(TelegramUser telegramUser)
+        {
+            _context.TelegramUsers.Update(telegramUser);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<TelegramUser> GetTelegramUserByChatIdAsync(string chatId)
+        {
+            return await _context.TelegramUsers
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.ChatId == chatId);
         }
     }
 }

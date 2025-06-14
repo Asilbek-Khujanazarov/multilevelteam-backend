@@ -14,5 +14,7 @@ namespace Autotest.Platform.Domain.Interfaces
         Task<User> GetByTelegramChatIdAsync(string chatId);
         Task<bool> DeleteAsync(Guid id);
         Task<TelegramUser> GetTelegramUserByPhoneNumberAsync(string phoneNumber);
+        Task<TelegramUser> GetTelegramUserByChatIdAsync(string chatId);
+        Task UpdateTelegramUserAsync(TelegramUser telegramUser);
     }
 }

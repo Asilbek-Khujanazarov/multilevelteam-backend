@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "F:\\Autotest.Platform\\Autotest.Platform.csproj": {}
+    "F:\\AvtoTest\\AutoTest.Platform\\Autotest.Platform.csproj": {}
   },
   "projects": {
-    "F:\\Autotest.Platform\\Autotest.Platform.csproj": {
+    "F:\\AvtoTest\\AutoTest.Platform\\Autotest.Platform.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\Autotest.Platform\\Autotest.Platform.csproj",
+        "projectUniqueName": "F:\\AvtoTest\\AutoTest.Platform\\Autotest.Platform.csproj",
         "projectName": "Autotest.Platform",
-        "projectPath": "F:\\Autotest.Platform\\Autotest.Platform.csproj",
+        "projectPath": "F:\\AvtoTest\\AutoTest.Platform\\Autotest.Platform.csproj",
         "packagesPath": "C:\\Users\\Asus\\.nuget\\packages\\",
-        "outputPath": "F:\\Autotest.Platform\\obj\\",
+        "outputPath": "F:\\AvtoTest\\AutoTest.Platform\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Asus\\AppData\\Roaming\\NuGet\\NuGet.Config"

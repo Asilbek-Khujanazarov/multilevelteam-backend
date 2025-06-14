@@ -56,17 +56,10 @@ namespace Autotest.Platform.API.Controllers
         }
 
         [HttpPost("login/verify")]
-        public async Task<IActionResult> CompleteLogin([FromBody] VerifyCodeRequest request)
-        {
-            try
+        public async Task<ActionResult<(TokenResponse tokens, UserResponse user)>> VerifyLogin([FromBody] LoginVerifyRequest request)
             {
-                var (tokens, user) = await _authService.CompleteLoginAsync(request);
-                return Ok(new { tokens, user });
-            }
-            catch (ApplicationException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
+            var result = await _authService.CompleteLoginAsync(request);
+            return Ok(result);
         }
 
         [HttpPost("refresh-token")]
@@ -103,6 +96,54 @@ namespace Autotest.Platform.API.Controllers
             }
 
             return Ok(new { message = "Token muvaffaqiyatli bekor qilindi" });
+        }
+
+        [Authorize]
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
+        {
+            try
+            {
+                var phoneNumber = User.FindFirst(ClaimTypes.MobilePhone)?.Value;
+                if (string.IsNullOrEmpty(phoneNumber))
+                {
+                    return BadRequest(new { message = "Foydalanuvchi ma'lumotlari topilmadi" });
+                }
+
+                var (success, message) = await _authService.ChangePasswordAsync(phoneNumber, request);
+                if (!success)
+                {
+                    return BadRequest(new { message });
+                }
+
+                return Ok(new { message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Xatolik yuz berdi", error = ex.Message });
+            }
+        }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
+        {
+            var (success, message) = await _authService.ForgotPasswordAsync(request);
+            if (!success)
+            {
+                return BadRequest(new { message });
+            }
+            return Ok(new { message });
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
+        {
+            var (success, message) = await _authService.ResetPasswordAsync(request);
+            if (!success)
+            {
+                return BadRequest(new { message });
+            }
+            return Ok(new { message });
         }
     }
 }

@@ -5235,11 +5235,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\Autotest.Platform\\Autotest.Platform.csproj",
+      "projectUniqueName": "F:\\AvtoTest\\Autotest.Platform\\Autotest.Platform.csproj",
       "projectName": "Autotest.Platform",
-      "projectPath": "F:\\Autotest.Platform\\Autotest.Platform.csproj",
+      "projectPath": "F:\\AvtoTest\\Autotest.Platform\\Autotest.Platform.csproj",
       "packagesPath": "C:\\Users\\Asus\\.nuget\\packages\\",
-      "outputPath": "F:\\Autotest.Platform\\obj\\",
+      "outputPath": "F:\\AvtoTest\\Autotest.Platform\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Asus\\AppData\\Roaming\\NuGet\\NuGet.Config"

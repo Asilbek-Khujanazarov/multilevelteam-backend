@@ -1,13 +1,22 @@
 // src/Domain/Entities/User.cs
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using Autotest.Platform.Domain.Enums;
 
 namespace Autotest.Platform.Domain.Entities
 {
     public class User
     {
-        public Guid Id { get; set; } = Guid.NewGuid(); 
+        public User()
+        {
+            Id = Guid.NewGuid();
+            IsVerified = false;
+            RefreshToken = string.Empty; // Initialize with empty string
+        }
+
+        [Key]
+        public Guid Id { get; set; }
 
         [Required]
         [Phone]
@@ -15,17 +24,17 @@ namespace Autotest.Platform.Domain.Entities
         public string PhoneNumber { get; set; }
 
         [Required]
-        [MinLength(2)]
         [MaxLength(50)]
         public string FirstName { get; set; }
 
         [Required]
-        [MinLength(2)]
         [MaxLength(50)]
         public string LastName { get; set; }
 
         [Required]
         public Gender Gender { get; set; }
+        [JsonIgnore]
+        public string Role { get; set; } = "User";
 
         [Required]
         public string PasswordHash { get; set; }
@@ -34,8 +43,6 @@ namespace Autotest.Platform.Domain.Entities
 
         public DateTime RegisteredDate { get; set; } = DateTime.UtcNow;
 
-        public string TelegramChatId { get; set; }
-
         public DateTime? LastLoginDate { get; set; }
 
         public string RefreshToken { get; set; }
@@ -43,6 +50,7 @@ namespace Autotest.Platform.Domain.Entities
         public DateTime? RefreshTokenExpiryTime { get; set; }
 
         // Navigation properties
+        public virtual TelegramUser TelegramUser { get; set; }
         public virtual ICollection<VerificationCode> VerificationCodes { get; set; }
     }
 }

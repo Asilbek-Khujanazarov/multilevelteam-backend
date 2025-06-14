@@ -12,8 +12,8 @@ namespace Autotest.Platform.Infrastructure.Data
         }
 
         public DbSet<User> Users { get; set; }
-        public DbSet<VerificationCode> VerificationCodes { get; set; }
         public DbSet<TelegramUser> TelegramUsers { get; set; }
+        public DbSet<VerificationCode> VerificationCodes { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -22,82 +22,41 @@ namespace Autotest.Platform.Infrastructure.Data
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(e => e.Id);
+                entity.Property(e => e.PhoneNumber).IsRequired().HasMaxLength(15);
+                entity.Property(e => e.PasswordHash).IsRequired();
+                entity.Property(e => e.FirstName).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.LastName).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.IsVerified).HasDefaultValue(false);
+                entity.Property(e => e.RefreshToken).IsRequired();
+                entity.HasIndex(e => e.PhoneNumber).IsUnique();
 
-                entity.Property(e => e.PhoneNumber)
-                    .IsRequired()
-                    .HasMaxLength(15);
-
-                entity.HasIndex(e => e.PhoneNumber)
-                    .IsUnique();
-
-                entity.Property(e => e.FirstName)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.LastName)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.PasswordHash)
-                    .IsRequired();
-
-                entity.Property(e => e.RegisteredDate)
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                // VerificationCode bilan relationship
-                entity.HasMany(e => e.VerificationCodes)
-                    .WithOne(e => e.User)
-                    .HasForeignKey(e => e.UserId)
-                    .OnDelete(DeleteBehavior.Cascade);
-            });
-
-            // VerificationCode konfiguratsiyasi
-            modelBuilder.Entity<VerificationCode>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-
-                entity.Property(e => e.PhoneNumber)
-                    .IsRequired()
-                    .HasMaxLength(15);
-
-                entity.Property(e => e.Code)
-                    .IsRequired()
-                    .HasMaxLength(6);
-
-                entity.Property(e => e.CreatedAt)
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                entity.Property(e => e.ExpiryTime)
-                    .IsRequired();
+                // TelegramUser bilan bog'lanish
+                entity.HasOne(u => u.TelegramUser)
+                    .WithOne(t => t.User)
+                    .HasForeignKey<TelegramUser>(t => t.UserId)
+                    .OnDelete(DeleteBehavior.SetNull);
             });
 
             // TelegramUser konfiguratsiyasi
             modelBuilder.Entity<TelegramUser>(entity =>
             {
                 entity.HasKey(e => e.Id);
-
-                entity.Property(e => e.ChatId)
-                    .IsRequired();
-
-                entity.Property(e => e.PhoneNumber)
-                    .IsRequired()
-                    .HasMaxLength(15);
-
-                entity.HasIndex(e => e.PhoneNumber)
-                    .IsUnique();
-
-                entity.HasIndex(e => e.ChatId)
-                    .IsUnique();
-
-                entity.Property(e => e.CreatedAt)
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                // User bilan relationship
-                entity.HasOne(e => e.User)
-                    .WithOne()
-                    .HasForeignKey<TelegramUser>(e => e.UserId)
-                    .OnDelete(DeleteBehavior.SetNull);
+                entity.Property(e => e.PhoneNumber).IsRequired().HasMaxLength(15);
+                entity.Property(e => e.ChatId).IsRequired();
+                entity.Property(e => e.LastInteractionAt).IsRequired();
+                entity.HasIndex(e => e.PhoneNumber).IsUnique();
+                entity.HasIndex(e => e.ChatId).IsUnique();
             });
+
+            // VerificationCode konfiguratsiyasi
+            modelBuilder.Entity<VerificationCode>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.PhoneNumber).IsRequired().HasMaxLength(15);
+                entity.Property(e => e.Code).IsRequired().HasMaxLength(6);
+                entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+                entity.HasIndex(e => new { e.PhoneNumber, e.Purpose });
+       });
         }
     }
 }

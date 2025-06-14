@@ -1,4 +1,5 @@
 // src/Domain/Entities/TelegramUser.cs
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Autotest.Platform.Domain.Entities
@@ -9,6 +10,7 @@ namespace Autotest.Platform.Domain.Entities
         {
             Id = Guid.NewGuid();
             CreatedAt = DateTime.UtcNow;
+            LastInteractionAt = DateTime.UtcNow;
         }
 
         [Key]
@@ -24,7 +26,7 @@ namespace Autotest.Platform.Domain.Entities
 
         public DateTime CreatedAt { get; private set; }
 
-        public DateTime? LastInteractionAt { get; set; }
+        public DateTime LastInteractionAt { get; set; }
 
         // Navigation property
         public Guid? UserId { get; set; }
