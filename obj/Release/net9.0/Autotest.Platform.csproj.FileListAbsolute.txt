@@ -178,3 +178,11 @@ F:\AvtoTest\AutoTest.Platform\obj\Release\net9.0\Autotest.Platform.pdb
 F:\AvtoTest\AutoTest.Platform\obj\Release\net9.0\Autotest.Platform.genruntimeconfig.cache
 F:\AvtoTest\AutoTest.Platform\obj\Release\net9.0\ref\Autotest.Platform.dll
 F:\AvtoTest\AutoTest.Platform\bin\Release\net9.0\global.json
+F:\AvtoTest\AutoTest.Platform\bin\Release\net9.0\publish\web.config
+F:\AvtoTest\AutoTest.Platform\bin\Release\net9.0\publish\appsettings.Development.json
+F:\AvtoTest\AutoTest.Platform\bin\Release\net9.0\publish\appsettings.json
+F:\AvtoTest\AutoTest.Platform\bin\Release\net9.0\publish\Autotest.Platform.deps.json
+F:\AvtoTest\AutoTest.Platform\bin\Release\net9.0\publish\Autotest.Platform.runtimeconfig.json
+F:\AvtoTest\AutoTest.Platform\bin\Release\net9.0\publish\Autotest.Platform.staticwebassets.endpoints.json
+F:\AvtoTest\AutoTest.Platform\bin\Release\net9.0\publish\global.json
+F:\AvtoTest\AutoTest.Platform\bin\Release\net9.0\publish\src\wwwroot\prerendered-routes.json

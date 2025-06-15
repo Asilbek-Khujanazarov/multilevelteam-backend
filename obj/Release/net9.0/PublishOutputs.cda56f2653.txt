@@ -1,7 +1,15 @@
 F:\AvtoTest\AutoTest.Platform\publish\Autotest.Platform.exe
+F:\AvtoTest\AutoTest.Platform\publish\publish\web.config
 F:\AvtoTest\AutoTest.Platform\publish\appsettings.Development.json
 F:\AvtoTest\AutoTest.Platform\publish\appsettings.json
 F:\AvtoTest\AutoTest.Platform\publish\global.json
+F:\AvtoTest\AutoTest.Platform\publish\publish\appsettings.Development.json
+F:\AvtoTest\AutoTest.Platform\publish\publish\appsettings.json
+F:\AvtoTest\AutoTest.Platform\publish\publish\Autotest.Platform.deps.json
+F:\AvtoTest\AutoTest.Platform\publish\publish\Autotest.Platform.runtimeconfig.json
+F:\AvtoTest\AutoTest.Platform\publish\publish\Autotest.Platform.staticwebassets.endpoints.json
+F:\AvtoTest\AutoTest.Platform\publish\publish\global.json
+F:\AvtoTest\AutoTest.Platform\publish\publish\src\wwwroot\prerendered-routes.json
 F:\AvtoTest\AutoTest.Platform\publish\src\wwwroot\prerendered-routes.json
 F:\AvtoTest\AutoTest.Platform\publish\Autotest.Platform.dll
 F:\AvtoTest\AutoTest.Platform\publish\Autotest.Platform.runtimeconfig.json
