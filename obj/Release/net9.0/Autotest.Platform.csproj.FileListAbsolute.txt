@@ -177,3 +177,4 @@ F:\AvtoTest\AutoTest.Platform\obj\Release\net9.0\refint\Autotest.Platform.dll
 F:\AvtoTest\AutoTest.Platform\obj\Release\net9.0\Autotest.Platform.pdb
 F:\AvtoTest\AutoTest.Platform\obj\Release\net9.0\Autotest.Platform.genruntimeconfig.cache
 F:\AvtoTest\AutoTest.Platform\obj\Release\net9.0\ref\Autotest.Platform.dll
+F:\AvtoTest\AutoTest.Platform\bin\Release\net9.0\global.json

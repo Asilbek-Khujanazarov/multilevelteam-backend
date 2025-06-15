@@ -1,6 +1,7 @@
 F:\AvtoTest\AutoTest.Platform\publish\Autotest.Platform.exe
 F:\AvtoTest\AutoTest.Platform\publish\appsettings.Development.json
 F:\AvtoTest\AutoTest.Platform\publish\appsettings.json
+F:\AvtoTest\AutoTest.Platform\publish\global.json
 F:\AvtoTest\AutoTest.Platform\publish\src\wwwroot\prerendered-routes.json
 F:\AvtoTest\AutoTest.Platform\publish\Autotest.Platform.dll
 F:\AvtoTest\AutoTest.Platform\publish\Autotest.Platform.runtimeconfig.json
