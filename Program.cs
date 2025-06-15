@@ -19,7 +19,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Database Configuration
-// Database Configuration
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 // JWT Authentication
@@ -42,14 +41,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 // CORS Policy
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowFrontend", policyBuilder =>
+    options.AddPolicy("AllowAll", policyBuilder =>
     {
         policyBuilder
-            .WithOrigins("https://avtotest-paltform-672890d2dd47.herokuapp.com")
+            .AllowAnyOrigin()
             .AllowAnyMethod()
             .AllowAnyHeader();
     });
 });
+
 // Telegram bot configuration
 builder.Services.Configure<TelegramBotConfiguration>(
     builder.Configuration.GetSection("TelegramBot")
@@ -82,21 +82,19 @@ var app = builder.Build();
 // Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
-    app.UseDeveloperExceptionPage();
-}
-// Configure the HTTP request pipeline
-if (app.Environment.IsDevelopment())
-{
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "HRsystem API v1");
+        c.RoutePrefix = string.Empty;
+    });
 }
 
-
-app.UseCors("AllowFrontend");
+app.UseCors("AllowAll");
 app.UseHttpsRedirection();
 app.UseDefaultFiles();
 app.UseStaticFiles();
-app.UseRouting();
+// app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapFallbackToFile("index.html");
