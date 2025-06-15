@@ -42,15 +42,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 // CORS Policy
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policyBuilder =>
+    options.AddPolicy("AllowFrontend", policyBuilder =>
     {
         policyBuilder
-            .AllowAnyOrigin()
+            .WithOrigins("https://avtotest-paltform-672890d2dd47.herokuapp.com")
             .AllowAnyMethod()
             .AllowAnyHeader();
     });
 });
-
 // Telegram bot configuration
 builder.Services.Configure<TelegramBotConfiguration>(
     builder.Configuration.GetSection("TelegramBot")
@@ -92,7 +91,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors("AllowAll");
+
+app.UseCors("AllowFrontend");
 app.UseHttpsRedirection();
 app.UseDefaultFiles();
 app.UseStaticFiles();
