@@ -75,7 +75,9 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IVerificationCodeRepository, VerificationCodeRepository>();
-
+// Heroku / hosting porti uchun
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+builder.WebHost.UseUrls($"http://*:{port}");
 var app = builder.Build();
 // Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
@@ -95,6 +97,6 @@ app.UseCors();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+app.MapFallbackToFile("index.html");
 app.MapControllers();
-
 app.Run();
