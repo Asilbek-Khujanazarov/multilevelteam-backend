@@ -1,1 +1,1 @@
-web: dotnet Autotest.Platform.dll
+web: dotnet bin/Release/net9.0/publish/Autotest.Platform.dll
