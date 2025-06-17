@@ -1,7 +1,6 @@
 F:\AvtoTest\Autotest.Platform\bin\Debug\net9.0\appsettings.Development.json
 F:\AvtoTest\Autotest.Platform\bin\Debug\net9.0\appsettings.json
 F:\AvtoTest\Autotest.Platform\bin\Debug\net9.0\package-lock.json
-F:\AvtoTest\Autotest.Platform\bin\Debug\net9.0\src\wwwroot\prerendered-routes.json
 F:\AvtoTest\Autotest.Platform\bin\Debug\net9.0\Autotest.Platform.staticwebassets.endpoints.json
 F:\AvtoTest\Autotest.Platform\bin\Debug\net9.0\Autotest.Platform.exe
 F:\AvtoTest\Autotest.Platform\bin\Debug\net9.0\Autotest.Platform.deps.json
