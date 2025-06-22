@@ -38,7 +38,7 @@ namespace Autotest.Platform.Domain.Entities
 
         [Required]
         public string PasswordHash { get; set; }
-
+        public string TelegramBotchatId { get; set; }
         public bool IsVerified { get; set; }
 
         public DateTime RegisteredDate { get; set; } = DateTime.UtcNow;

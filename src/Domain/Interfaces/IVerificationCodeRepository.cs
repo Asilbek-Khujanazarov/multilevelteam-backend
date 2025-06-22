@@ -13,5 +13,7 @@ namespace Autotest.Platform.Domain.Interfaces
         Task UpdateAsync(VerificationCode code);
         Task<bool> IsRecentCodeExistsAsync(string phoneNumber, TimeSpan window);
         Task<bool> DeleteAsync(Guid id);
+        Task DeleteAsync(VerificationCode code);
+        Task DeleteExpiredCodesAsync();
     }
 }

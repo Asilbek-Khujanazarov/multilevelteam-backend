@@ -10,6 +10,7 @@ using Autotest.Platform.Infrastructure.Repositories;
 using Autotest.Platform.Infrastructure.Services;
 using Telegram.Bot;
 using Microsoft.Extensions.Options;
+using Domain.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -67,10 +68,12 @@ builder.Services.AddHttpClient("telegram_bot_client")
     });
 
 
+// Add AutoMapper
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
-// Register Services
-builder.Services.AddScoped<ITelegramBotService, TelegramBotService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ITelegramBotService, TelegramBotService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();

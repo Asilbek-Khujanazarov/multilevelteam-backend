@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "F:\\AvtoTest\\Autotest.Platform\\Autotest.Platform.csproj": {}
+    "D:\\AvtoTest\\Autotest.Platform\\Autotest.Platform.csproj": {}
   },
   "projects": {
-    "F:\\AvtoTest\\Autotest.Platform\\Autotest.Platform.csproj": {
+    "D:\\AvtoTest\\Autotest.Platform\\Autotest.Platform.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\AvtoTest\\Autotest.Platform\\Autotest.Platform.csproj",
+        "projectUniqueName": "D:\\AvtoTest\\Autotest.Platform\\Autotest.Platform.csproj",
         "projectName": "Autotest.Platform",
-        "projectPath": "F:\\AvtoTest\\Autotest.Platform\\Autotest.Platform.csproj",
+        "projectPath": "D:\\AvtoTest\\Autotest.Platform\\Autotest.Platform.csproj",
         "packagesPath": "C:\\Users\\Asus\\.nuget\\packages\\",
-        "outputPath": "F:\\AvtoTest\\Autotest.Platform\\obj\\",
+        "outputPath": "D:\\AvtoTest\\Autotest.Platform\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Asus\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -44,6 +44,10 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "dependencies": {
+            "AutoMapper.Extensions.Microsoft.DependencyInjection": {
+              "target": "Package",
+              "version": "[12.0.1, )"
+            },
             "BCrypt.Net-Next": {
               "target": "Package",
               "version": "[4.0.3, )"

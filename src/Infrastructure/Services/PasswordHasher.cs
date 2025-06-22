@@ -2,15 +2,10 @@
 using System;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using System.Security.Cryptography;
+using Autotest.Platform.Domain.Interfaces;
 
 namespace Autotest.Platform.Infrastructure.Services
 {
-    public interface IPasswordHasher
-    {
-        string HashPassword(string password);
-        bool VerifyPassword(string password, string hash);
-    }
-
     public class PasswordHasher : IPasswordHasher
     {
         private const int SaltSize = 16; // 128 bit

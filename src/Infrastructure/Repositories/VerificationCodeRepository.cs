@@ -31,11 +31,11 @@ namespace Autotest.Platform.Infrastructure.Repositories
         }
 
         public async Task<VerificationCode> GetLatestCodeAsync(
-            string phoneNumber, 
+            string phoneNumber,
             VerificationPurpose purpose)
         {
             return await _context.VerificationCodes
-                .Where(v => v.PhoneNumber == phoneNumber && 
+                .Where(v => v.PhoneNumber == phoneNumber &&
                        v.Purpose == purpose &&
                        !v.IsUsed &&
                        v.ExpiryTime > DateTime.UtcNow)
@@ -50,12 +50,12 @@ namespace Autotest.Platform.Infrastructure.Repositories
         }
 
         public async Task<bool> IsRecentCodeExistsAsync(
-            string phoneNumber, 
+            string phoneNumber,
             TimeSpan window)
         {
             var cutoffTime = DateTime.UtcNow.Subtract(window);
             return await _context.VerificationCodes
-                .AnyAsync(v => v.PhoneNumber == phoneNumber && 
+                .AnyAsync(v => v.PhoneNumber == phoneNumber &&
                               v.CreatedAt >= cutoffTime);
         }
 
@@ -69,6 +69,21 @@ namespace Autotest.Platform.Infrastructure.Repositories
                 return true;
             }
             return false;
+        }
+
+        public async Task DeleteAsync(VerificationCode code)
+        {
+            _context.VerificationCodes.Remove(code);
+            await _context.SaveChangesAsync();
+        }
+        public async Task DeleteExpiredCodesAsync()
+        {
+            var now = DateTime.UtcNow;
+            var expiredCodes = _context.VerificationCodes
+                .Where(v => v.ExpiryTime < now);
+
+            _context.VerificationCodes.RemoveRange(expiredCodes);
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -7,16 +7,10 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using Autotest.Platform.Domain.Entities;
 using Microsoft.Extensions.Configuration;
+using Autotest.Platform.Domain.Interfaces;
 
 namespace Autotest.Platform.Infrastructure.Services
 {
-    public interface IJwtService
-    {
-        string GenerateAccessToken(User user);
-        string GenerateRefreshToken();
-        ClaimsPrincipal GetPrincipalFromExpiredToken(string token);
-        DateTime GetRefreshTokenExpiryTime();
-    }
 
     public class JwtService : IJwtService
     {

@@ -1,31 +1,13 @@
-// src/Infrastructure/Services/AuthService.cs
-using System;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using Autotest.Platform.Domain.Entities;
 using Autotest.Platform.Domain.Interfaces;
 using Autotest.Platform.Domain.Enums;
 using Autotest.Platform.API.DTOs.Auth;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
+using Domain.Interfaces;
 
 namespace Autotest.Platform.Infrastructure.Services
 {
-    public interface IAuthService
-    {
-        Task<(bool success, string message)> StartRegistrationAsync(RegisterRequest request);
-        Task<(TokenResponse tokens, UserResponse user)> CompleteRegistrationAsync(VerifyCodeRequest request);
-        Task<(bool success, string message)> StartLoginAsync(LoginRequest request);
-        Task<(TokenResponse tokens, UserResponse user)> CompleteLoginAsync(LoginVerifyRequest request);
-        Task<TokenResponse> RefreshTokenAsync(string accessToken, string refreshToken);
-        Task<bool> RevokeTokenAsync(string phoneNumber);
-        Task<(bool success, string message)> ChangePasswordAsync(string phoneNumber, ChangePasswordRequest request);
-        Task<(bool success, string message)> ForgotPasswordAsync(ForgotPasswordRequest request);
-        Task<(bool success, string message)> ResetPasswordAsync(ResetPasswordRequest request);
-    }
-
     public class AuthService : IAuthService
     {
         private readonly IUserRepository _userRepository;
@@ -37,7 +19,7 @@ namespace Autotest.Platform.Infrastructure.Services
 
         // Tasdiqlash kodini qayta yuborish uchun minimal vaqt
         private readonly TimeSpan _codeResendWindow = TimeSpan.FromMinutes(1);
-        
+
         // Tasdiqlash kodining amal qilish muddati
         private readonly TimeSpan _codeExpiryWindow = TimeSpan.FromMinutes(5);
 
@@ -89,7 +71,7 @@ namespace Autotest.Platform.Infrastructure.Services
 
             // Kodni saqlash
             await _codeRepository.CreateAsync(verificationCode);
-
+            await _codeRepository.DeleteExpiredCodesAsync();
             // Telegram orqali kodni yuborish
             var chatId = long.Parse(telegramUser.ChatId);
             var sent = await _telegramBotService.SendVerificationCodeAsync(chatId, verificationCode.Code);
@@ -99,14 +81,14 @@ namespace Autotest.Platform.Infrastructure.Services
                 return (false, "Tasdiqlash kodini yuborishda xatolik yuz berdi. Iltimos, qayta urinib ko'ring");
             }
 
-            return (true, "Tasdiqlash kodi Telegram orqali yuborildi");
+            return (true, "Tasdiqlash kodi Telegram Bot orqali yuborildi");
         }
 
         public async Task<(TokenResponse tokens, UserResponse user)> CompleteRegistrationAsync(VerifyCodeRequest request)
         {
             // Tasdiqlash kodini tekshirish
             var verificationCode = await _codeRepository.GetLatestCodeAsync(
-                request.PhoneNumber, 
+                request.PhoneNumber,
                 VerificationPurpose.Registration);
 
             if (verificationCode == null)
@@ -150,15 +132,17 @@ namespace Autotest.Platform.Infrastructure.Services
 
             // TelegramUser bilan bog'lash
             var telegramUser = await _userRepository.GetTelegramUserByPhoneNumberAsync(request.PhoneNumber);
+            var userdata = await _userRepository.GetByPhoneNumberAsync(request.PhoneNumber);
             if (telegramUser != null)
             {
                 telegramUser.UserId = user.Id;
+                userdata.TelegramBotchatId = telegramUser.ChatId;
                 await _userRepository.UpdateTelegramUserAsync(telegramUser);
             }
 
             // Kodni ishlatilgan deb belgilash
             verificationCode.IsUsed = true;
-            await _codeRepository.UpdateAsync(verificationCode);
+            await _codeRepository.DeleteAsync(verificationCode);
 
             // Access token yaratish
             var accessToken = _jwtService.GenerateAccessToken(user);
@@ -213,6 +197,7 @@ namespace Autotest.Platform.Infrastructure.Services
             };
 
             await _codeRepository.CreateAsync(verificationCode);
+            await _codeRepository.DeleteExpiredCodesAsync();
 
             // Telegram orqali kodni yuborish
             var chatId = long.Parse(telegramUser.ChatId);
@@ -230,7 +215,7 @@ namespace Autotest.Platform.Infrastructure.Services
         {
             // Tasdiqlash kodini tekshirish
             var verificationCode = await _codeRepository.GetLatestCodeAsync(
-                request.PhoneNumber, 
+                request.PhoneNumber,
                 VerificationPurpose.Login);
 
             if (verificationCode == null)
@@ -268,7 +253,7 @@ namespace Autotest.Platform.Infrastructure.Services
 
             // Kodni ishlatilgan deb belgilash
             verificationCode.IsUsed = true;
-            await _codeRepository.UpdateAsync(verificationCode);
+            await _codeRepository.DeleteAsync(verificationCode);
 
             // Token va refresh token yaratish
             var accessToken = _jwtService.GenerateAccessToken(user);
@@ -300,8 +285,8 @@ namespace Autotest.Platform.Infrastructure.Services
             var userId = Guid.Parse(principal.FindFirst(ClaimTypes.NameIdentifier)?.Value);
 
             var user = await _userRepository.GetByIdAsync(userId);
-            if (user == null || 
-                user.RefreshToken != refreshToken || 
+            if (user == null ||
+                user.RefreshToken != refreshToken ||
                 user.RefreshTokenExpiryTime <= DateTime.UtcNow)
             {
                 throw new SecurityTokenException("Invalid refresh token");
@@ -396,6 +381,7 @@ namespace Autotest.Platform.Infrastructure.Services
             };
 
             await _codeRepository.CreateAsync(verificationCode);
+            await _codeRepository.DeleteExpiredCodesAsync();
 
             // Telegram orqali kodni yuborish
             var chatId = long.Parse(telegramUser.ChatId);
@@ -408,7 +394,7 @@ namespace Autotest.Platform.Infrastructure.Services
         {
             // Tasdiqlash kodini tekshirish
             var verificationCode = await _codeRepository.GetLatestCodeAsync(
-                request.PhoneNumber, 
+                request.PhoneNumber,
                 VerificationPurpose.PasswordReset);
 
             if (verificationCode == null)
@@ -450,7 +436,7 @@ namespace Autotest.Platform.Infrastructure.Services
 
             // Kodni ishlatilgan deb belgilash
             verificationCode.IsUsed = true;
-            await _codeRepository.UpdateAsync(verificationCode);
+            await _codeRepository.DeleteAsync(verificationCode);
 
             return (true, "Parol muvaffaqiyatli o'zgartirildi");
         }

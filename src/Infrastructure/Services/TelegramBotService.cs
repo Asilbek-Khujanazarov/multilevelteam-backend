@@ -9,14 +9,7 @@ using Telegram.Bot.Types.Enums;
 
 namespace Autotest.Platform.Infrastructure.Services
 {
-    public interface ITelegramBotService
-    {
-        Task<bool> IsUserSubscribedAsync(long chatId);
-        Task<bool> SendVerificationCodeAsync(long chatId, string code);
-        Task<bool> SendWelcomeMessageAsync(long chatId, string firstName);
-        Task<bool> RequestPhoneNumberAsync(long chatId);
-        Task HandleUpdateAsync(Update update);
-    }
+
 
     public class TelegramBotService : ITelegramBotService
     {

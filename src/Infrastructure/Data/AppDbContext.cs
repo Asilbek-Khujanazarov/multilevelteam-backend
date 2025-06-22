@@ -56,6 +56,7 @@ namespace Autotest.Platform.Infrastructure.Data
                 entity.Property(e => e.Code).IsRequired().HasMaxLength(6);
                 entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
                 entity.HasIndex(e => new { e.PhoneNumber, e.Purpose });
+                
        });
         }
     }

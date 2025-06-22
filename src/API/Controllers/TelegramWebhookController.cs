@@ -1,4 +1,5 @@
 // src/API/Controllers/TelegramWebhookController.cs
+using Autotest.Platform.Domain.Interfaces;
 using Autotest.Platform.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Telegram.Bot.Types;
