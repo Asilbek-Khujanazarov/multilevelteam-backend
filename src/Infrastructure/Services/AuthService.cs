@@ -90,6 +90,7 @@ namespace Autotest.Platform.Infrastructure.Services
             var verificationCode = await _codeRepository.GetLatestCodeAsync(
                 request.PhoneNumber,
                 VerificationPurpose.Registration);
+            var telegramUser = await _userRepository.GetTelegramUserByPhoneNumberAsync(request.PhoneNumber);
 
             if (verificationCode == null)
             {
@@ -125,24 +126,23 @@ namespace Autotest.Platform.Infrastructure.Services
                 Gender = request.Gender,
                 IsVerified = true,
                 RefreshToken = refreshToken,
-                RefreshTokenExpiryTime = refreshTokenExpiryTime
+                RefreshTokenExpiryTime = refreshTokenExpiryTime,
+                TelegramBotchatId = telegramUser?.ChatId
             };
 
             await _userRepository.CreateAsync(user);
 
             // TelegramUser bilan bog'lash
-            var telegramUser = await _userRepository.GetTelegramUserByPhoneNumberAsync(request.PhoneNumber);
             var userdata = await _userRepository.GetByPhoneNumberAsync(request.PhoneNumber);
             if (telegramUser != null)
             {
                 telegramUser.UserId = user.Id;
-                userdata.TelegramBotchatId = telegramUser.ChatId;
                 await _userRepository.UpdateTelegramUserAsync(telegramUser);
             }
 
             // Kodni ishlatilgan deb belgilash
-          verificationCode.IsUsed = true;
-await _codeRepository.UpdateAsync(verificationCode);
+            verificationCode.IsUsed = true;
+            await _codeRepository.DeleteAsync(verificationCode);
             // Access token yaratish
             var accessToken = _jwtService.GenerateAccessToken(user);
 
