@@ -141,9 +141,8 @@ namespace Autotest.Platform.Infrastructure.Services
             }
 
             // Kodni ishlatilgan deb belgilash
-            verificationCode.IsUsed = true;
-            await _codeRepository.DeleteAsync(verificationCode);
-
+          verificationCode.IsUsed = true;
+await _codeRepository.UpdateAsync(verificationCode);
             // Access token yaratish
             var accessToken = _jwtService.GenerateAccessToken(user);
 
