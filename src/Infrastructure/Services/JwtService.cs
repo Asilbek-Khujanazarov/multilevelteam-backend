@@ -29,11 +29,12 @@ namespace Autotest.Platform.Infrastructure.Services
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.NameIdentifier,"userId", user.Id.ToString()),
                 new Claim(ClaimTypes.MobilePhone, user.PhoneNumber),
                 new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
                 new Claim(ClaimTypes.Gender, user.Gender.ToString()),
                 new Claim(ClaimTypes.Role, user.Role)
+
             };
 
             var token = new JwtSecurityToken(
@@ -74,9 +75,9 @@ namespace Autotest.Platform.Infrastructure.Services
             var principal = new JwtSecurityTokenHandler()
                 .ValidateToken(token, validation, out var securityToken);
 
-            if (securityToken is not JwtSecurityToken jwtSecurityToken || 
+            if (securityToken is not JwtSecurityToken jwtSecurityToken ||
                 !jwtSecurityToken.Header.Alg.Equals(
-                    SecurityAlgorithms.HmacSha256, 
+                    SecurityAlgorithms.HmacSha256,
                     StringComparison.InvariantCultureIgnoreCase))
             {
                 throw new SecurityTokenException("Invalid token");
