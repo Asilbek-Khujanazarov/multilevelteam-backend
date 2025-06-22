@@ -6,7 +6,6 @@ namespace Autotest.Platform.API.DTOs.Users
         public string PhoneNumber { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string Gender { get; set; }
         public string Role { get; set; }
         public int TelegramBotchatId { get; set; }
         public bool IsVerified { get; set; }

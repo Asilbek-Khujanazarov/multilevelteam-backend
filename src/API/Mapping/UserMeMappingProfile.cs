@@ -8,8 +8,7 @@ namespace Autotest.Platform.API.Mapping
     {
         public UserMeMappingProfile()
         {
-            CreateMap<User, UserMeDto>()
-                .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender.ToString()));
+            CreateMap<User, UserMeDto>();
 
             CreateMap<TelegramUser, TelegramUserMeDto>();
         }
