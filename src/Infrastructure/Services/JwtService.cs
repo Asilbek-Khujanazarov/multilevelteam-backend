@@ -29,7 +29,8 @@ namespace Autotest.Platform.Infrastructure.Services
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier,"userId", user.Id.ToString()),
+                new Claim("userId", user.Id.ToString()),
+                new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),
                 new Claim(ClaimTypes.MobilePhone, user.PhoneNumber),
                 new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
                 new Claim(ClaimTypes.Gender, user.Gender.ToString()),
