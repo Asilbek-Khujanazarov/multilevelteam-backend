@@ -8,6 +8,8 @@ namespace Autotest.Platform.API.DTOs.Users
         public string LastName { get; set; }
         public string Role { get; set; }
         public int TelegramBotchatId { get; set; }
+        public string? AvatarUrl { get; set; }
+        public string? AvatarPublicId { get; set; }
         public bool IsVerified { get; set; }
         public DateTime RegisteredDate { get; set; }
         public DateTime? LastLoginDate { get; set; }

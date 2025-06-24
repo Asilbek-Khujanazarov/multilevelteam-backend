@@ -50,7 +50,14 @@ namespace Autotest.Platform.Infrastructure.Services
         {
             return await _userRepository.DeleteAsync(id);
         }
+        public async Task UpdateUserAsync(User user)
+        {
+            await _userRepository.UpdateAsync(user);
+        }
+        public async Task<User> GetDomainUserByIdAsync(Guid id)
+        {
+            return await _userRepository.GetByIdAsync(id);
+        }
 
-      
     }
 }

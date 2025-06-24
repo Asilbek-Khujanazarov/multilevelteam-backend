@@ -40,7 +40,8 @@ namespace Autotest.Platform.Domain.Entities
         public string PasswordHash { get; set; }
         public string TelegramBotchatId { get; set; }
         public bool IsVerified { get; set; }
-
+        public string? AvatarUrl { get; set; }
+        public string? AvatarPublicId { get; set; }
         public DateTime RegisteredDate { get; set; } = DateTime.UtcNow;
 
         public DateTime? LastLoginDate { get; set; }

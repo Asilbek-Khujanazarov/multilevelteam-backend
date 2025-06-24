@@ -7,15 +7,17 @@ namespace Autotest.Platform.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    // [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-
-        public UserController(IUserService userService)
+        private readonly CloudinaryService _cloudinaryService;
+        public UserController(IUserService userService, CloudinaryService cloudinaryService)
         {
             _userService = userService;
+            _cloudinaryService = cloudinaryService;
         }
+
 
         [HttpGet("me")]
         public async Task<ActionResult<UserMeDto>> GetCurrentUser()
@@ -80,6 +82,35 @@ namespace Autotest.Platform.API.Controllers
                 return NotFound();
 
             return NoContent();
+        }
+
+        [HttpPost("avatar")]
+        public async Task<IActionResult> UploadAvatar([FromForm] AvatarUploadDto dto)
+        {
+            var file = dto.File;
+            if (file == null || file.Length == 0)
+                return BadRequest("Fayl tanlanmagan");
+
+            var userId = User.FindFirst("userId")?.Value;
+            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var id))
+                return Unauthorized();
+
+            var user = await _userService.GetDomainUserByIdAsync(id); // <-- domain User
+            if (user == null)
+                return NotFound();
+
+            // Eski avatarni o'chirish
+            if (!string.IsNullOrEmpty(user.AvatarPublicId))
+                await _cloudinaryService.DeleteImageAsync(user.AvatarPublicId);
+
+            // Yangi avatarni yuklash
+            var uploadResult = await _cloudinaryService.UploadImageAsync(file);
+
+            user.AvatarUrl = uploadResult.Url;
+            user.AvatarPublicId = uploadResult.PublicId;
+            await _userService.UpdateUserAsync(user);
+
+            return Ok(new { avatarUrl = user.AvatarUrl });
         }
     }
 }

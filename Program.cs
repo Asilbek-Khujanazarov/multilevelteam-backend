@@ -11,6 +11,7 @@ using Autotest.Platform.Infrastructure.Services;
 using Telegram.Bot;
 using Microsoft.Extensions.Options;
 using Domain.Interfaces;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -78,6 +79,12 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IVerificationCodeRepository, VerificationCodeRepository>();
+builder.Services.AddSingleton<CloudinaryService>();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Your API", Version = "v1" });
+    // c.OperationFilter<FileUploadOperation>(); // Agar kerak bo‘lsa
+});
 // Heroku / hosting porti uchun
 var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
 builder.WebHost.UseUrls($"http://*:{port}");
@@ -91,6 +98,7 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "HRsystem API v1");
         c.RoutePrefix = string.Empty;
     });
+    
 }
 
 app.UseCors("AllowAll");

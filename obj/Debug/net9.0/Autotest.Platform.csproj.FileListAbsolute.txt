@@ -358,3 +358,4 @@ D:\AvtoTest\Autotest.Platform\obj\Debug\net9.0\Autotest.Platform.genruntimeconfi
 D:\AvtoTest\Autotest.Platform\obj\Debug\net9.0\ref\Autotest.Platform.dll
 D:\AvtoTest\Autotest.Platform\bin\Debug\net9.0\AutoMapper.dll
 D:\AvtoTest\Autotest.Platform\bin\Debug\net9.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+D:\AvtoTest\Autotest.Platform\bin\Debug\net9.0\CloudinaryDotNet.dll

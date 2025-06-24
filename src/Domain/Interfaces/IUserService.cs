@@ -1,5 +1,6 @@
 
 using Autotest.Platform.API.DTOs.Users;
+using Autotest.Platform.Domain.Entities;
 
 namespace Autotest.Platform.Domain.Interfaces
 {
@@ -11,5 +12,8 @@ namespace Autotest.Platform.Domain.Interfaces
         Task<UserDto> GetUserByTelegramChatIdAsync(string chatId);
         Task<TelegramUserDto> GetTelegramUserByPhoneNumberAsync(string phoneNumber);
         Task<bool> DeleteUserAsync(Guid id);
+        Task UpdateUserAsync(User user);
+        Task<User> GetDomainUserByIdAsync(Guid id);
+        
     }
 }
