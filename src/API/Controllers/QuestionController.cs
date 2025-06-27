@@ -1,0 +1,54 @@
+using Autotest.Platform.API.DTOs.Questions;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
+
+[ApiController]
+[Route("api/[controller]")]
+public class QuestionController : ControllerBase
+{
+    private readonly IQuestionService _questionService;
+
+    public QuestionController(IQuestionService questionService)
+    {
+        _questionService = questionService;
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Create([FromForm] QuestionCreateDto dto)
+    {
+        var question = await _questionService.CreateAsync(dto);
+        return Ok(question);
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(Guid id)
+    {
+        var question = await _questionService.GetByIdAsync(id);
+        if (question == null) return NotFound();
+        return Ok(question);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        var questions = await _questionService.GetAllAsync();
+        return Ok(questions);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(Guid id, [FromForm] QuestionCreateDto dto)
+    {
+        var result = await _questionService.UpdateAsync(id, dto);
+        if (!result) return NotFound();
+        return NoContent();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        var result = await _questionService.DeleteAsync(id);
+        if (!result) return NotFound();
+        return NoContent();
+    }
+}

@@ -14,6 +14,8 @@ namespace Autotest.Platform.Infrastructure.Data
         public DbSet<User> Users { get; set; }
         public DbSet<TelegramUser> TelegramUsers { get; set; }
         public DbSet<VerificationCode> VerificationCodes { get; set; }
+        public DbSet<Question> Questions { get; set; }
+        public DbSet<Answer> Answers { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -56,8 +58,13 @@ namespace Autotest.Platform.Infrastructure.Data
                 entity.Property(e => e.Code).IsRequired().HasMaxLength(6);
                 entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
                 entity.HasIndex(e => new { e.PhoneNumber, e.Purpose });
-                
-       });
+
+            });
+            modelBuilder.Entity<Question>()
+            .HasMany(q => q.Answers)
+            .WithOne(a => a.Question)
+            .HasForeignKey(a => a.QuestionId)
+            .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

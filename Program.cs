@@ -71,6 +71,8 @@ builder.Services.AddHttpClient("telegram_bot_client")
 
 // Add AutoMapper
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
+builder.Services.AddAutoMapper(typeof(QuestionProfile));
+
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -80,14 +82,16 @@ builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IVerificationCodeRepository, VerificationCodeRepository>();
 builder.Services.AddSingleton<CloudinaryService>();
+builder.Services.AddScoped<IQuestionService, QuestionService>();
+builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Your API", Version = "v1" });
     // c.OperationFilter<FileUploadOperation>(); // Agar kerak bo‘lsa
 });
 // Heroku / hosting porti uchun
-var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
-builder.WebHost.UseUrls($"http://*:{port}");
+// var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+// builder.WebHost.UseUrls($"http://*:{port}");
 var app = builder.Build();
 // Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())

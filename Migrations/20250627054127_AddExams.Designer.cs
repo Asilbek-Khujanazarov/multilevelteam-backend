@@ -3,6 +3,7 @@ using System;
 using Autotest.Platform.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Autotest.Platform.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250627054127_AddExams")]
+    partial class AddExams
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,14 +25,11 @@ namespace Autotest.Platform.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Autotest.Platform.Domain.Entities.Answer", b =>
+            modelBuilder.Entity("Answer", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
-
-                    b.Property<string>("ImagePublicId")
-                        .HasColumnType("text");
 
                     b.Property<string>("ImageUrl")
                         .HasColumnType("text");
@@ -48,28 +48,7 @@ namespace Autotest.Platform.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("Answers");
-                });
-
-            modelBuilder.Entity("Autotest.Platform.Domain.Entities.Question", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("ImagePublicId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Questions");
+                    b.ToTable("Answer");
                 });
 
             modelBuilder.Entity("Autotest.Platform.Domain.Entities.TelegramUser", b =>
@@ -220,9 +199,54 @@ namespace Autotest.Platform.Migrations
                     b.ToTable("VerificationCodes");
                 });
 
-            modelBuilder.Entity("Autotest.Platform.Domain.Entities.Answer", b =>
+            modelBuilder.Entity("Exam", b =>
                 {
-                    b.HasOne("Autotest.Platform.Domain.Entities.Question", "Question")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Exams");
+                });
+
+            modelBuilder.Entity("Question", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ExamId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExamId");
+
+                    b.ToTable("Question");
+                });
+
+            modelBuilder.Entity("Answer", b =>
+                {
+                    b.HasOne("Question", "Question")
                         .WithMany("Answers")
                         .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -250,9 +274,15 @@ namespace Autotest.Platform.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Autotest.Platform.Domain.Entities.Question", b =>
+            modelBuilder.Entity("Question", b =>
                 {
-                    b.Navigation("Answers");
+                    b.HasOne("Exam", "Exam")
+                        .WithMany("Questions")
+                        .HasForeignKey("ExamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Exam");
                 });
 
             modelBuilder.Entity("Autotest.Platform.Domain.Entities.User", b =>
@@ -261,6 +291,16 @@ namespace Autotest.Platform.Migrations
                         .IsRequired();
 
                     b.Navigation("VerificationCodes");
+                });
+
+            modelBuilder.Entity("Exam", b =>
+                {
+                    b.Navigation("Questions");
+                });
+
+            modelBuilder.Entity("Question", b =>
+                {
+                    b.Navigation("Answers");
                 });
 #pragma warning restore 612, 618
         }
