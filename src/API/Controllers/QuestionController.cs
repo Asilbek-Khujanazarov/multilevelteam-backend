@@ -18,7 +18,7 @@ public class QuestionController : ControllerBase
     public async Task<IActionResult> Create([FromForm] QuestionCreateDto dto)
     {
         var question = await _questionService.CreateAsync(dto);
-        return Ok(question);
+        return Ok( new { message = "Muvaffaqiyatli yaratildi" });
     }
 
     [HttpGet("{id}")]
@@ -48,7 +48,7 @@ public class QuestionController : ControllerBase
     {
         var result = await _questionService.UpdateAsync(id, dto);
         if (!result) return NotFound();
-        return NoContent();
+        return Ok(new { message = "Muvaffaqiyatli yangilandi" });
     }
 
     [HttpDelete("{id}")]
@@ -56,6 +56,6 @@ public class QuestionController : ControllerBase
     {
         var result = await _questionService.DeleteAsync(id);
         if (!result) return NotFound();
-        return NoContent();
+        return Ok(new { message = "Muvaffaqiyatli o'chirildi"  });
     }
 }
