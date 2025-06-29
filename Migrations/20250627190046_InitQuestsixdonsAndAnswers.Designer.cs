@@ -3,6 +3,7 @@ using System;
 using Autotest.Platform.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Autotest.Platform.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250627190046_InitQuestsixdonsAndAnswers")]
+    partial class InitQuestsixdonsAndAnswers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -28,9 +31,6 @@ namespace Autotest.Platform.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("CorrectDescription")
-                        .HasColumnType("text");
-
                     b.Property<string>("ImagePublicId")
                         .HasColumnType("text");
 
@@ -44,6 +44,7 @@ namespace Autotest.Platform.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Text")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -118,14 +119,8 @@ namespace Autotest.Platform.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<int>("DurationMinutes")
-                        .HasColumnType("integer");
-
                     b.Property<DateTime?>("FinishedAt")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsFinished")
-                        .HasColumnType("boolean");
 
                     b.Property<int>("QuestionCount")
                         .HasColumnType("integer");

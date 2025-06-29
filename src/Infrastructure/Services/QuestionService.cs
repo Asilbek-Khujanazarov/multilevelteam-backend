@@ -1,6 +1,9 @@
 using AutoMapper;
 using Autotest.Platform.API.DTOs.Questions;
 using Autotest.Platform.Domain.Entities;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 public class QuestionService : IQuestionService
 {
@@ -21,7 +24,6 @@ public class QuestionService : IQuestionService
         string? imagePublicId = null;
         if (dto.Image != null)
         {
-            // SAVOL uchun "questions" folderiga yuklash
             var imgResult = await _cloudinaryService.UploadImageAsync(dto.Image, "questions");
             imageUrl = imgResult.Url;
             imagePublicId = imgResult.PublicId;
@@ -44,7 +46,6 @@ public class QuestionService : IQuestionService
                 string? answerImagePublicId = null;
                 if (a.Image != null)
                 {
-                    // JAVOB uchun "answers" folderiga yuklash
                     var ansResult = await _cloudinaryService.UploadImageAsync(a.Image, "answers");
                     answerImageUrl = ansResult.Url;
                     answerImagePublicId = ansResult.PublicId;
@@ -57,6 +58,7 @@ public class QuestionService : IQuestionService
                     ImageUrl = answerImageUrl,
                     ImagePublicId = answerImagePublicId,
                     IsCorrect = a.IsCorrect,
+                    CorrectDescription = a.CorrectDescription, // Tuzatildi
                     QuestionId = question.Id
                 });
             }
@@ -78,6 +80,13 @@ public class QuestionService : IQuestionService
         return _mapper.Map<List<QuestionDto>>(questions);
     }
 
+    public async Task<(List<QuestionDto> Questions, int Total)> GetAllAsyncPage(int page, int pageSize)
+    {
+        var (questions, total) = await _questionRepository.GetAllAsyncPage(page, pageSize);
+        var questionDtos = _mapper.Map<List<QuestionDto>>(questions);
+        return (questionDtos, total);
+    }
+
     public async Task<bool> UpdateAsync(Guid id, QuestionCreateDto dto)
     {
         var question = await _questionRepository.GetByIdAsync(id);
@@ -85,7 +94,6 @@ public class QuestionService : IQuestionService
 
         question.Text = dto.Text;
 
-        // SAVOL uchun rasm yangilansa, eski rasmni o‘chirish va yangisini "questions" folderiga yuklash
         if (dto.Image != null)
         {
             if (!string.IsNullOrEmpty(question.ImagePublicId))
@@ -96,7 +104,6 @@ public class QuestionService : IQuestionService
             question.ImagePublicId = imgResult.PublicId;
         }
 
-        // Eski javoblar rasmlarini o‘chirish
         foreach (var oldAnswer in question.Answers)
         {
             if (!string.IsNullOrEmpty(oldAnswer.ImagePublicId))
@@ -112,7 +119,6 @@ public class QuestionService : IQuestionService
                 string? answerImagePublicId = null;
                 if (a.Image != null)
                 {
-                    // JAVOB uchun "answers" folderiga yuklash
                     var ansResult = await _cloudinaryService.UploadImageAsync(a.Image, "answers");
                     answerImageUrl = ansResult.Url;
                     answerImagePublicId = ansResult.PublicId;
@@ -125,6 +131,7 @@ public class QuestionService : IQuestionService
                     ImageUrl = answerImageUrl,
                     ImagePublicId = answerImagePublicId,
                     IsCorrect = a.IsCorrect,
+                    CorrectDescription = a.CorrectDescription, // Tuzatildi
                     QuestionId = question.Id
                 });
             }

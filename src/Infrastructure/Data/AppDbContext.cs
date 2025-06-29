@@ -16,6 +16,8 @@ namespace Autotest.Platform.Infrastructure.Data
         public DbSet<VerificationCode> VerificationCodes { get; set; }
         public DbSet<Question> Questions { get; set; }
         public DbSet<Answer> Answers { get; set; }
+        public DbSet<TestSession> TestSessions { get; set; }
+        public DbSet<TestSessionQuestion> TestSessionQuestions { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

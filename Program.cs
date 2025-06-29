@@ -1,4 +1,3 @@
-// Program.cs
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -18,11 +17,43 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+// Swagger + Bearer JWT
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Your API", Version = "v1" });
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer abcdefgh12345\"",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                },
+                Scheme = "oauth2",
+                Name = "Bearer",
+                In = ParameterLocation.Header,
+            },
+            new List<string>()
+        }
+    });
+    // c.OperationFilter<FileUploadOperation>(); // Agar kerak bo‘lsa
+});
 
 // Database Configuration
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 // JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -56,6 +87,7 @@ builder.Services.AddCors(options =>
 builder.Services.Configure<TelegramBotConfiguration>(
     builder.Configuration.GetSection("TelegramBot")
 );
+
 // Add controllers
 builder.Services.AddControllers()
     .AddNewtonsoftJson(); // Telegram.Bot uchun kerak
@@ -68,11 +100,10 @@ builder.Services.AddHttpClient("telegram_bot_client")
         return new TelegramBotClient(botConfig.Token, httpClient);
     });
 
-
 // Add AutoMapper
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddAutoMapper(typeof(QuestionProfile));
-
+builder.Services.AddAutoMapper(typeof(ExamProfile)); // mapping uchun
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -84,15 +115,15 @@ builder.Services.AddScoped<IVerificationCodeRepository, VerificationCodeReposito
 builder.Services.AddSingleton<CloudinaryService>();
 builder.Services.AddScoped<IQuestionService, QuestionService>();
 builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Your API", Version = "v1" });
-    // c.OperationFilter<FileUploadOperation>(); // Agar kerak bo‘lsa
-});
+builder.Services.AddScoped<ITestSessionRepository, TestSessionRepository>();
+builder.Services.AddScoped<ITestSessionService, TestSessionService>();
+
 // Heroku / hosting porti uchun
 // var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
 // builder.WebHost.UseUrls($"http://*:{port}");
+
 var app = builder.Build();
+
 // Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
@@ -102,7 +133,6 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "HRsystem API v1");
         c.RoutePrefix = string.Empty;
     });
-    
 }
 
 app.UseCors("AllowAll");

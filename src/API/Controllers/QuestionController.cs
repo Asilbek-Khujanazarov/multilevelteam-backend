@@ -36,6 +36,13 @@ public class QuestionController : ControllerBase
         return Ok(questions);
     }
 
+    [HttpGet("page")]
+    public async Task<IActionResult> GetAllAsyncPage([FromQuery] int page = 1, [FromQuery] int pageSize = 50)
+    {
+        var result = await _questionService.GetAllAsyncPage(page, pageSize);
+        return Ok(new { questions = result.Questions, total = result.Total });
+    }
+
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(Guid id, [FromForm] QuestionCreateDto dto)
     {
