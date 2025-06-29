@@ -6,6 +6,6 @@ namespace Autotest.Platform.API.DTOs.Quesrtions
         public IFormFile? Image { get; set; }
         public bool IsCorrect { get; set; }
         public string? CorrectDescription { get; set; }
-        
+        public string? ImageUrl { get; internal set; }
     }
 }

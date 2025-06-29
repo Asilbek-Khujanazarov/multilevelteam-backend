@@ -94,28 +94,50 @@ public class QuestionService : IQuestionService
 
         question.Text = dto.Text;
 
+        // Savol rasmini yangilash
         if (dto.Image != null)
         {
             if (!string.IsNullOrEmpty(question.ImagePublicId))
+            {
                 await _cloudinaryService.DeleteImageAsync(question.ImagePublicId);
-
+            }
             var imgResult = await _cloudinaryService.UploadImageAsync(dto.Image, "questions");
             question.ImageUrl = imgResult.Url;
             question.ImagePublicId = imgResult.PublicId;
         }
+        else if (dto.Image == null && !string.IsNullOrEmpty(dto.ImageUrl))
+        {
+            question.ImageUrl = dto.ImageUrl;
+            question.ImagePublicId = null; // Agar ImageUrl saqlansa, PublicId o‘chiriladi
+        }
+        else
+        {
+            // Agar rasm yo‘q bo‘lsa, eski rasmni o‘chirish
+            if (!string.IsNullOrEmpty(question.ImagePublicId))
+            {
+                await _cloudinaryService.DeleteImageAsync(question.ImagePublicId);
+            }
+            question.ImageUrl = null;
+            question.ImagePublicId = null;
+        }
 
-        foreach (var oldAnswer in question.Answers)
+        // Eski javoblarni o‘chirish
+        var existingAnswers = question.Answers.ToList();
+        foreach (var oldAnswer in existingAnswers)
         {
             if (!string.IsNullOrEmpty(oldAnswer.ImagePublicId))
+            {
                 await _cloudinaryService.DeleteImageAsync(oldAnswer.ImagePublicId);
+            }
         }
         question.Answers.Clear();
 
+        // Yangi javoblarni qo‘shish
         if (dto.Answers != null && dto.Answers.Count > 0)
         {
             foreach (var a in dto.Answers)
             {
-                string? answerImageUrl = null;
+                string? answerImageUrl = a.ImageUrl;
                 string? answerImagePublicId = null;
                 if (a.Image != null)
                 {
@@ -131,8 +153,8 @@ public class QuestionService : IQuestionService
                     ImageUrl = answerImageUrl,
                     ImagePublicId = answerImagePublicId,
                     IsCorrect = a.IsCorrect,
-                    CorrectDescription = a.CorrectDescription, // Tuzatildi
-                    QuestionId = question.Id
+                    CorrectDescription = a.CorrectDescription,
+                    QuestionId = id
                 });
             }
         }
@@ -140,7 +162,6 @@ public class QuestionService : IQuestionService
         await _questionRepository.UpdateAsync(question);
         return true;
     }
-
     public async Task<bool> DeleteAsync(Guid id)
     {
         var question = await _questionRepository.GetByIdAsync(id);

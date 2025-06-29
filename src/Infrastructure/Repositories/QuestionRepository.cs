@@ -53,10 +53,30 @@ public class QuestionRepository : IQuestionRepository
 
     public async Task UpdateAsync(Question question)
     {
-        _context.Questions.Update(question);
+        var existingQuestion = await _context.Questions
+            .Include(q => q.Answers)
+            .FirstOrDefaultAsync(q => q.Id == question.Id);
+
+        if (existingQuestion == null)
+        {
+            throw new Exception("Savol topilmadi");
+        }
+
+        // Savol ma'lumotlarini yangilash
+        _context.Entry(existingQuestion).CurrentValues.SetValues(question);
+
+        // Eski javoblarni o‘chirish
+        _context.Answers.RemoveRange(existingQuestion.Answers);
+
+        // Yangi javoblarni qo‘shish
+        foreach (var answer in question.Answers)
+        {
+            answer.QuestionId = existingQuestion.Id;
+            _context.Answers.Add(answer);
+        }
+
         await _context.SaveChangesAsync();
     }
-
     public async Task DeleteAsync(Question question)
     {
         _context.Questions.Remove(question);
