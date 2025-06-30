@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Autotest.Platform")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+752d90d4f26efd92faaddd74dd21bc0dd1938879")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+17fa710c1c393ff461e0501ba683aef7fccd6a95")]
 [assembly: System.Reflection.AssemblyProductAttribute("Autotest.Platform")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Autotest.Platform")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

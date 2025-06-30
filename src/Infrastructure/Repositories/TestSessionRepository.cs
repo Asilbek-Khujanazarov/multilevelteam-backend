@@ -1,11 +1,19 @@
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Autotest.Platform.Domain.Entities;
 using Autotest.Platform.Domain.Interfaces;
 using Autotest.Platform.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
+namespace Autotest.Platform.Infrastructure.Data;
+
 public class TestSessionRepository : ITestSessionRepository
 {
     private readonly AppDbContext _context;
+
     public TestSessionRepository(AppDbContext context) => _context = context;
 
     public async Task<TestSession> CreateAsync(TestSession session)
@@ -37,6 +45,16 @@ public class TestSessionRepository : ITestSessionRepository
             .OrderByDescending(x => x.StartedAt)
             .Take(count)
             .Include(x => x.Questions)
+            .ToListAsync();
+    }
+
+    public async Task<List<TestSession>> GetExpiredSessionsAsync()
+    {
+        return await _context.TestSessions
+            .Where(x => !x.IsFinished && x.StartedAt.AddMinutes(x.DurationMinutes) < DateTime.UtcNow)
+            .Include(x => x.Questions)
+                .ThenInclude(q => q.Question)
+                    .ThenInclude(q => q.Answers)
             .ToListAsync();
     }
 }

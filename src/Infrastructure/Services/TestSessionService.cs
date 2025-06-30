@@ -1,8 +1,15 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Autotest.Platform.Domain.DTOs.Exam;
 using Autotest.Platform.Domain.Entities;
 using Autotest.Platform.Domain.Interfaces;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Autotest.Platform.API.DTOs.Questions;
+
+namespace Autotest.Platform.Infrastructure.Services;
 
 public class TestSessionService : ITestSessionService
 {
@@ -23,7 +30,7 @@ public class TestSessionService : ITestSessionService
     public async Task<StartTestResponseDto> StartTestAsync(Guid userId)
     {
         const int questionCount = 20;
-        const int durationMinutes = 30;
+        const int durationMinutes = 25;
 
         var prevSessions = await _sessionRepo.GetLastSessionsAsync(userId, 5);
         var prevQuestionIds = prevSessions
@@ -113,6 +120,14 @@ public class TestSessionService : ITestSessionService
         else if (percentage >= 50) grade = "Average";
         else grade = "Bad";
 
+        // Failure reason
+        string? failureReason = null;
+        int wrongCount = session.Questions.Count(q => q.IsCorrect == false);
+        if (wrongCount > 2)
+        {
+            failureReason = "Testdan o‘ta olmadingiz, chunki noto‘g‘ri javoblar soni 2 tadan oshdi.";
+        }
+
         await _sessionRepo.UpdateAsync(session);
 
         var correct = session.Questions.Where(q => q.IsCorrect == true).ToList();
@@ -124,20 +139,26 @@ public class TestSessionService : ITestSessionService
             SessionId = session.Id,
             TotalQuestions = session.QuestionCount,
             CorrectAnswers = session.Score,
+            WrongAnswerCount = wrongCount, // Added
             StartedAt = session.StartedAt,
             FinishedAt = session.FinishedAt.Value,
             Grade = grade,
+            FailureReason = failureReason,
             CorrectQuestions = _mapper.Map<List<QuestionDto>>(correct.Select(q => q.Question)),
             WrongQuestions = _mapper.Map<List<QuestionDto>>(wrong.Select(q => q.Question)),
             UnansweredQuestions = _mapper.Map<List<QuestionDto>>(unanswered.Select(q => q.Question))
         };
     }
 
-    // Cron yoki background servisda ishlatish uchun: vaqt tugagan testlarni avtomatik yakunlash
     public async Task AutoFinishExpiredTestsAsync()
     {
-        // Bu metodni background service yoki cron uchun yozasiz,
-        // IsFinished == false va (StartedAt + DurationMinutes) < DateTime.UtcNow bo'lgan testlarni tugatadi
-        // (implementatsiyani loyihangizda to'ldiring)
+        var expiredSessions = await _sessionRepo.GetExpiredSessionsAsync();
+        foreach (var session in expiredSessions)
+        {
+            if (!session.IsFinished)
+            {
+                await FinishTestAsync(session.UserId, session.Id, force: true);
+            }
+        }
     }
 }
