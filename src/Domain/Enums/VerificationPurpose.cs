@@ -1,5 +1,5 @@
 // src/Domain/Enums/VerificationPurpose.cs
-namespace Autotest.Platform.Domain.Enums
+namespace Multilevelteam.Platform.Domain.Enums
 {
     public enum VerificationPurpose
     {

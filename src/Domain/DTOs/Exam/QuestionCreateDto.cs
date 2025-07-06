@@ -1,6 +1,6 @@
-using Autotest.Platform.API.DTOs.Quesrtions;
+using Multilevelteam.Platform.API.DTOs.Quesrtions;
 
-namespace Autotest.Platform.API.DTOs.Questions
+namespace Multilevelteam.Platform.API.DTOs.Questions
 {
     public class QuestionCreateDto
 {

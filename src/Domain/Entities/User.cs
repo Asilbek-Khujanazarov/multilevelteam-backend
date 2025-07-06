@@ -2,9 +2,9 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using Autotest.Platform.Domain.Enums;
+using Multilevelteam.Platform.Domain.Enums;
 
-namespace Autotest.Platform.Domain.Entities
+namespace Multilevelteam.Platform.Domain.Entities
 {
     public class User
     {

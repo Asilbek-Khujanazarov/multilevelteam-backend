@@ -1,4 +1,4 @@
-namespace Autotest.Platform.Domain.Entities;
+namespace Multilevelteam.Platform.Domain.Entities;
 
 public class TestSession
 {

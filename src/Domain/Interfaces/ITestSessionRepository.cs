@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Autotest.Platform.Domain.Entities;
+using Multilevelteam.Platform.Domain.Entities;
 
-namespace Autotest.Platform.Domain.Interfaces;
+namespace Multilevelteam.Platform.Domain.Interfaces;
 
 public interface ITestSessionRepository
 {

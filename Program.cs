@@ -2,11 +2,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Autotest.Platform.Domain.Interfaces;
-using Autotest.Platform.Infrastructure.Configuration;
-using Autotest.Platform.Infrastructure.Data;
-using Autotest.Platform.Infrastructure.Repositories;
-using Autotest.Platform.Infrastructure.Services;
+using Multilevelteam.Platform.Domain.Interfaces;
+using Multilevelteam.Platform.Infrastructure.Configuration;
+using Multilevelteam.Platform.Infrastructure.Data;
+using Multilevelteam.Platform.Infrastructure.Repositories;
+using Multilevelteam.Platform.Infrastructure.Services;
 using Telegram.Bot;
 using Microsoft.Extensions.Options;
 using Domain.Interfaces;
@@ -66,8 +66,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["JWT:Issuer"],
             ValidAudience = builder.Configuration["JWT:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
         };
     });
 

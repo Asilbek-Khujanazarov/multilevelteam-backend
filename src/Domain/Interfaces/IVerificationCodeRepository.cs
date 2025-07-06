@@ -1,9 +1,9 @@
 
 // src/Domain/Interfaces/IVerificationCodeRepository.cs
-using Autotest.Platform.Domain.Entities;
-using Autotest.Platform.Domain.Enums;
+using Multilevelteam.Platform.Domain.Entities;
+using Multilevelteam.Platform.Domain.Enums;
 
-namespace Autotest.Platform.Domain.Interfaces
+namespace Multilevelteam.Platform.Domain.Interfaces
 {
     public interface IVerificationCodeRepository
     {

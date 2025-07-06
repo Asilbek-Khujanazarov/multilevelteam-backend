@@ -1,9 +1,9 @@
 // src/Domain/Entities/VerificationCode.cs
 using System;
 using System.ComponentModel.DataAnnotations;
-using Autotest.Platform.Domain.Enums;
+using Multilevelteam.Platform.Domain.Enums;
 
-namespace Autotest.Platform.Domain.Entities
+namespace Multilevelteam.Platform.Domain.Entities
 {
     public class VerificationCode
     {

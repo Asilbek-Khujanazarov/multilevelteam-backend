@@ -1,6 +1,0 @@
-@Autotest.Platform_HostAddress = http://localhost:5004
-
-GET {{Autotest.Platform_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

@@ -1,5 +1,5 @@
 
-namespace Autotest.Platform.Domain.Interfaces
+namespace Multilevelteam.Platform.Domain.Interfaces
 {
     public interface IPasswordHasher
     {

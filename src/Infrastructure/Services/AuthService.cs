@@ -1,12 +1,12 @@
-using Autotest.Platform.Domain.Entities;
-using Autotest.Platform.Domain.Interfaces;
-using Autotest.Platform.Domain.Enums;
-using Autotest.Platform.API.DTOs.Auth;
+using Multilevelteam.Platform.Domain.Entities;
+using Multilevelteam.Platform.Domain.Interfaces;
+using Multilevelteam.Platform.Domain.Enums;
+using Multilevelteam.Platform.API.DTOs.Auth;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using Domain.Interfaces;
 
-namespace Autotest.Platform.Infrastructure.Services
+namespace Multilevelteam.Platform.Infrastructure.Services
 {
     public class AuthService : IAuthService
     {

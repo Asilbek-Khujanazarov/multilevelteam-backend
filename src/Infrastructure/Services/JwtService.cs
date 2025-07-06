@@ -5,11 +5,11 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using Autotest.Platform.Domain.Entities;
+using Multilevelteam.Platform.Domain.Entities;
 using Microsoft.Extensions.Configuration;
-using Autotest.Platform.Domain.Interfaces;
+using Multilevelteam.Platform.Domain.Interfaces;
 
-namespace Autotest.Platform.Infrastructure.Services
+namespace Multilevelteam.Platform.Infrastructure.Services
 {
 
     public class JwtService : IJwtService

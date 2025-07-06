@@ -1,8 +1,8 @@
 using AutoMapper;
-using Autotest.Platform.API.DTOs.Users;
-using Autotest.Platform.Domain.Entities;
+using Multilevelteam.Platform.API.DTOs.Users;
+using Multilevelteam.Platform.Domain.Entities;
 
-namespace Autotest.Platform.API.Mapping
+namespace Multilevelteam.Platform.API.Mapping
 {
     public class UserMeMappingProfile : Profile
     {

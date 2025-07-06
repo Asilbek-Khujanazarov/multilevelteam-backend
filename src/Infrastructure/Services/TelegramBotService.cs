@@ -3,11 +3,11 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 using Microsoft.Extensions.Options;
-using Autotest.Platform.Infrastructure.Configuration;
-using Autotest.Platform.Domain.Interfaces;
+using Multilevelteam.Platform.Infrastructure.Configuration;
+using Multilevelteam.Platform.Domain.Interfaces;
 using Telegram.Bot.Types.Enums;
 
-namespace Autotest.Platform.Infrastructure.Services
+namespace Multilevelteam.Platform.Infrastructure.Services
 {
 
 
@@ -73,7 +73,7 @@ namespace Autotest.Platform.Infrastructure.Services
             try
             {
                 var message = $"Assalomu alaykum, *{firstName}*!\n\n" +
-                            "AutoTest.tech platformasining rasmiy botiga xush kelibsiz. 🚗\n\n" +
+                            "Multilevelteam.tech platformasining rasmiy botiga xush kelibsiz. 🚗\n\n" +
                             "Platformada ro'yxatdan o'tish va tizimga kirish uchun " +
                             "telefon raqamingizni ulashishingiz kerak bo'ladi.\n\n" +
                             "Telefon raqamingizni ulashish uchun quyidagi tugmani bosing 👇";
@@ -187,7 +187,7 @@ namespace Autotest.Platform.Infrastructure.Services
         private async Task HandleHelpCommandAsync(Message message)
         {
             var helpMessage = 
-                "*AutoTest.tech Bot Yordam*\n\n" +
+                "*Multilevelteam.tech Bot Yordam*\n\n" +
                 "🤖 Bot buyruqlari:\n\n" +
                 "• /start - Botni qayta ishga tushirish\n" +
                 "• /help - Ushbu yordam xabarini ko'rsatish\n" +
@@ -200,7 +200,7 @@ namespace Autotest.Platform.Infrastructure.Services
                 "• Bot orqali yuboriladi\n" +
                 "• 5 daqiqa davomida amal qiladi\n\n" +
                 "❓ Qo'shimcha savollar bo'lsa:\n" +
-                "• support@AutoTest.tech";
+                "• support@Multilevelteam.tech";
 
             await _botClient.SendTextMessageAsync(
                 chatId: message.Chat.Id,
@@ -279,7 +279,7 @@ namespace Autotest.Platform.Infrastructure.Services
                 {
                     var responseMessage = "✅ Telefon raqamingiz muvaffaqiyatli saqlandi.\n\n" +
                   "Endi siz platformada ro'yxatdan o'tishingiz yoki tizimga kirishingiz mumkin.\n\n" +
-                        "Platformaga o'tish uchun: https://AutoTest.tech";
+                        "Platformaga o'tish uchun: https://Multilevelteam.tech";
 
             await _botClient.SendTextMessageAsync(
                 chatId: message.Chat.Id,
@@ -296,7 +296,7 @@ namespace Autotest.Platform.Infrastructure.Services
                         "Iltimos, quyidagi qadamlarni bajarib ko'ring:\n" +
                         "1. Botni qayta ishga tushiring (/start)\n" +
                         "2. Telefon raqamingizni qayta ulashing\n" +
-                        "3. Agar muammo davom etsa, support@AutoTest.tech ga xabar bering";
+                        "3. Agar muammo davom etsa, support@Multilevelteam.tech ga xabar bering";
 
                     await _botClient.SendTextMessageAsync(
                         chatId: message.Chat.Id,
@@ -313,7 +313,7 @@ namespace Autotest.Platform.Infrastructure.Services
                     "Iltimos, quyidagi qadamlarni bajarib ko'ring:\n" +
                     "1. Botni qayta ishga tushiring (/start)\n" +
                     "2. Telefon raqamingizni qayta ulashing\n" +
-                    "3. Agar muammo davom etsa, supportautotest@gmail.com ga xabar bering";
+                    "3. Agar muammo davom etsa, supportMultilevelteam@gmail.com ga xabar bering";
 
                 await _botClient.SendTextMessageAsync(
                     chatId: message.Chat.Id,

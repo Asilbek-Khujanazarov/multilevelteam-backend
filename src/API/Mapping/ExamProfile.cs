@@ -1,6 +1,6 @@
 using AutoMapper;
-using Autotest.Platform.Domain.Entities;
-using Autotest.Platform.API.DTOs.Questions;
+using Multilevelteam.Platform.Domain.Entities;
+using Multilevelteam.Platform.API.DTOs.Questions;
 public class ExamProfile : Profile
 {
     public ExamProfile()

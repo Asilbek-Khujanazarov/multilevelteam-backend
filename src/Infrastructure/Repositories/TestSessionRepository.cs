@@ -3,12 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Autotest.Platform.Domain.Entities;
-using Autotest.Platform.Domain.Interfaces;
-using Autotest.Platform.Infrastructure.Data;
+using Multilevelteam.Platform.Domain.Entities;
+using Multilevelteam.Platform.Domain.Interfaces;
+using Multilevelteam.Platform.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace Autotest.Platform.Infrastructure.Data;
+namespace Multilevelteam.Platform.Infrastructure.Data;
 
 public class TestSessionRepository : ITestSessionRepository
 {

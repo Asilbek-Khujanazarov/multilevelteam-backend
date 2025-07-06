@@ -1,4 +1,4 @@
-namespace Autotest.Platform.Domain.DTOs.Exam;
+namespace Multilevelteam.Platform.Domain.DTOs.Exam;
 
 public class StartTestRequestDto
 {

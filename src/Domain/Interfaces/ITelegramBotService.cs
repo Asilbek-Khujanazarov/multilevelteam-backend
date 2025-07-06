@@ -2,7 +2,7 @@
 
 using Telegram.Bot.Types;
 
-namespace Autotest.Platform.Domain.Interfaces
+namespace Multilevelteam.Platform.Domain.Interfaces
 {
     public interface ITelegramBotService
     {

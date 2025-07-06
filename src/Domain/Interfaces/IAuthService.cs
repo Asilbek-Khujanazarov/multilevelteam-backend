@@ -1,13 +1,4 @@
-using System.Threading.Tasks;
-using Autotest.Platform.API.DTOs.Auth;
-using Autotest.Platform.Domain.Entities;
-using Autotest.Platform.Domain.Interfaces;
-using Autotest.Platform.Domain.Enums;
-using Autotest.Platform.API.DTOs.Auth;
-using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
+using Multilevelteam.Platform.API.DTOs.Auth;
 namespace Domain.Interfaces
 {
     public interface IAuthService

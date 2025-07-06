@@ -1,13 +1,13 @@
 // src/API/Controllers/AuthController.cs
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Autotest.Platform.API.DTOs.Auth;
-using Autotest.Platform.Infrastructure.Services;
+using Multilevelteam.Platform.API.DTOs.Auth;
+using Multilevelteam.Platform.Infrastructure.Services;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using Domain.Interfaces;
 
-namespace Autotest.Platform.API.Controllers
+namespace Multilevelteam.Platform.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

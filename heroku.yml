@@ -2,4 +2,4 @@ build:
   docker:
     web: Dockerfile
 run:
-  web: dotnet Autotest.Platform.dll
+  web: dotnet Multilevelteam.Platform.dll

@@ -1,5 +1,5 @@
-using Autotest.Platform.Domain.Entities;
-using Autotest.Platform.Infrastructure.Data;
+using Multilevelteam.Platform.Domain.Entities;
+using Multilevelteam.Platform.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

@@ -2,9 +2,9 @@
 using System;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using System.Security.Cryptography;
-using Autotest.Platform.Domain.Interfaces;
+using Multilevelteam.Platform.Domain.Interfaces;
 
-namespace Autotest.Platform.Infrastructure.Services
+namespace Multilevelteam.Platform.Infrastructure.Services
 {
     public class PasswordHasher : IPasswordHasher
     {

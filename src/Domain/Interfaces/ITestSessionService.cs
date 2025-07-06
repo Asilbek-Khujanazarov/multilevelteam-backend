@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Autotest.Platform.Domain.DTOs.Exam;
+using Multilevelteam.Platform.Domain.DTOs.Exam;
 
-namespace Autotest.Platform.Domain.Interfaces;
+namespace Multilevelteam.Platform.Domain.Interfaces;
 
 public interface ITestSessionService
 {

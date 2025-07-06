@@ -2,7 +2,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Autotest.Platform.Domain.Entities
+namespace Multilevelteam.Platform.Domain.Entities
 {
     public class TelegramUser
     {

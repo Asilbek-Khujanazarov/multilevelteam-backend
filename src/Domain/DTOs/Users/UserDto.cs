@@ -1,4 +1,4 @@
-namespace Autotest.Platform.API.DTOs.Users
+namespace Multilevelteam.Platform.API.DTOs.Users
 {
     public class UserDto
     {

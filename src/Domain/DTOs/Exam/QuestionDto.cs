@@ -1,4 +1,4 @@
-namespace Autotest.Platform.API.DTOs.Questions
+namespace Multilevelteam.Platform.API.DTOs.Questions
 {
     public class QuestionDto
     {

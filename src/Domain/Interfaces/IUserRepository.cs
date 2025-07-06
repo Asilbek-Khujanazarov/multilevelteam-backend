@@ -1,7 +1,7 @@
 // src/Domain/Interfaces/IUserRepository.cs
-using Autotest.Platform.Domain.Entities;
+using Multilevelteam.Platform.Domain.Entities;
 
-namespace Autotest.Platform.Domain.Interfaces
+namespace Multilevelteam.Platform.Domain.Interfaces
 {
     public interface IUserRepository
     {

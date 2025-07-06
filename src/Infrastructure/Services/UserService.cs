@@ -1,9 +1,9 @@
 using AutoMapper;
-using Autotest.Platform.API.DTOs.Users;
-using Autotest.Platform.Domain.Entities;
-using Autotest.Platform.Domain.Interfaces;
+using Multilevelteam.Platform.API.DTOs.Users;
+using Multilevelteam.Platform.Domain.Entities;
+using Multilevelteam.Platform.Domain.Interfaces;
 
-namespace Autotest.Platform.Infrastructure.Services
+namespace Multilevelteam.Platform.Infrastructure.Services
 {
     public class UserService : IUserService
     {

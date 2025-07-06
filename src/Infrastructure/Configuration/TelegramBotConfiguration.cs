@@ -1,5 +1,5 @@
 // src/Infrastructure/Configuration/TelegramBotConfiguration.cs
-namespace Autotest.Platform.Infrastructure.Configuration
+namespace Multilevelteam.Platform.Infrastructure.Configuration
 {
     public class TelegramBotConfiguration
     {

@@ -1,8 +1,8 @@
 // src/Infrastructure/Data/AppDbContext.cs
 using Microsoft.EntityFrameworkCore;
-using Autotest.Platform.Domain.Entities;
+using Multilevelteam.Platform.Domain.Entities;
 
-namespace Autotest.Platform.Infrastructure.Data
+namespace Multilevelteam.Platform.Infrastructure.Data
 {
     public class AppDbContext : DbContext
     {

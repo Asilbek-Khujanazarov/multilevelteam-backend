@@ -1,10 +1,10 @@
 // src/API/Controllers/TelegramWebhookController.cs
-using Autotest.Platform.Domain.Interfaces;
-using Autotest.Platform.Infrastructure.Services;
+using Multilevelteam.Platform.Domain.Interfaces;
+using Multilevelteam.Platform.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Telegram.Bot.Types;
 
-namespace Autotest.Platform.API.Controllers
+namespace Multilevelteam.Platform.API.Controllers
 {
     [ApiController]
     [Route("api/telegram")]

@@ -8197,11 +8197,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\AvtoTest\\Autotest.Platform\\Autotest.Platform.csproj",
-      "projectName": "Autotest.Platform",
-      "projectPath": "D:\\AvtoTest\\Autotest.Platform\\Autotest.Platform.csproj",
+      "projectUniqueName": "C:\\Multilevel Team\\Multilevelteam.Platform\\Multilevelteam.Platform.csproj",
+      "projectName": "Multilevelteam.Platform",
+      "projectPath": "C:\\Multilevel Team\\Multilevelteam.Platform\\Multilevelteam.Platform.csproj",
       "packagesPath": "C:\\Users\\Asus\\.nuget\\packages\\",
-      "outputPath": "D:\\AvtoTest\\Autotest.Platform\\obj\\",
+      "outputPath": "C:\\Multilevel Team\\Multilevelteam.Platform\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Asus\\AppData\\Roaming\\NuGet\\NuGet.Config"

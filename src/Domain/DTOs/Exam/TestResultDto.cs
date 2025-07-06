@@ -1,6 +1,6 @@
-using Autotest.Platform.API.DTOs.Questions;
+using Multilevelteam.Platform.API.DTOs.Questions;
 
-namespace Autotest.Platform.Domain.DTOs.Exam;
+namespace Multilevelteam.Platform.Domain.DTOs.Exam;
 public class TestResultDto
 {
     public Guid SessionId { get; set; }

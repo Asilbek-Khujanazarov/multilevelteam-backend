@@ -1,11 +1,11 @@
 // src/Infrastructure/Repositories/VerificationCodeRepository.cs
 using Microsoft.EntityFrameworkCore;
-using Autotest.Platform.Domain.Entities;
-using Autotest.Platform.Domain.Interfaces;
-using Autotest.Platform.Domain.Enums;
-using Autotest.Platform.Infrastructure.Data;
+using Multilevelteam.Platform.Domain.Entities;
+using Multilevelteam.Platform.Domain.Interfaces;
+using Multilevelteam.Platform.Domain.Enums;
+using Multilevelteam.Platform.Infrastructure.Data;
 
-namespace Autotest.Platform.Infrastructure.Repositories
+namespace Multilevelteam.Platform.Infrastructure.Repositories
 {
     public class VerificationCodeRepository : IVerificationCodeRepository
     {
