@@ -18,9 +18,53 @@ namespace Multilevelteam.Platform.Infrastructure.Data
         public DbSet<Answer> Answers { get; set; }
         public DbSet<TestSession> TestSessions { get; set; }
         public DbSet<TestSessionQuestion> TestSessionQuestions { get; set; }
+         public DbSet<Course> Courses { get; set; }
+        public DbSet<CourseAllowedUser> CourseAllowedUsers { get; set; }
+        public DbSet<CoursePurchasedUser> CoursePurchasedUsers { get; set; }
+        public DbSet<Lesson> Lessons { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+             // User-Course (Teacher) 1-ko‘p
+            modelBuilder.Entity<Course>()
+                .HasOne(c => c.Teacher)
+                .WithMany(u => u.CreatedCourses)
+                .HasForeignKey(c => c.TeacherId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // CourseAllowedUser (Private)
+            modelBuilder.Entity<CourseAllowedUser>()
+                .HasKey(x => new { x.CourseId, x.UserId });
+
+            modelBuilder.Entity<CourseAllowedUser>()
+                .HasOne(x => x.Course)
+                .WithMany(c => c.AllowedUsers)
+                .HasForeignKey(x => x.CourseId);
+
+            modelBuilder.Entity<CourseAllowedUser>()
+                .HasOne(x => x.User)
+                .WithMany(u => u.AllowedCourses)
+                .HasForeignKey(x => x.UserId);
+
+            // CoursePurchasedUser (Public)
+            modelBuilder.Entity<CoursePurchasedUser>()
+                .HasKey(x => new { x.CourseId, x.UserId });
+
+            modelBuilder.Entity<CoursePurchasedUser>()
+                .HasOne(x => x.Course)
+                .WithMany(c => c.PurchasedUsers)
+                .HasForeignKey(x => x.CourseId);
+
+            modelBuilder.Entity<CoursePurchasedUser>()
+                .HasOne(x => x.User)
+                .WithMany(u => u.PurchasedCourses)
+                .HasForeignKey(x => x.UserId);
+
+            // Lesson - Course 1-ko‘p
+            modelBuilder.Entity<Lesson>()
+                .HasOne(l => l.Course)
+                .WithMany(c => c.Lessons)
+                .HasForeignKey(l => l.CourseId);
 
             // User konfiguratsiyasi
             modelBuilder.Entity<User>(entity =>
