@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Multilevelteam.Platform")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+953e6a16924fa755263ce5c6f9752cb77f596cd4")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+42fa566c366b08cb7f3c12b3ad086824a3ab515f")]
 [assembly: System.Reflection.AssemblyProductAttribute("Multilevelteam.Platform")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Multilevelteam.Platform")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
