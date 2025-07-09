@@ -1,6 +1,6 @@
 namespace Multilevelteam.Platform.Domain.Enums
 {
-    public enum CourseType
+    public enum     CourseType
     {
         Public,
         Private,
