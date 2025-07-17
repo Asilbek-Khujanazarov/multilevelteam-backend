@@ -1,4 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Multilevelteam.Platform.Application.Dtos;
+using Multilevelteam.Platform.Application.Dtos.CourseDtos;
+using Multilevelteam.Platform.Application.Interfaces;
+using System;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Multilevelteam.Platform.API.Controllers
 {
@@ -6,21 +13,47 @@ namespace Multilevelteam.Platform.API.Controllers
     [Route("api/[controller]")]
     public class CourseController : ControllerBase
     {
-        private readonly CourseService _courseService;
-
-        public CourseController(CourseService courseService)
+        private readonly ICourseService _service;
+        public CourseController(ICourseService service)
         {
-            _courseService = courseService;
+            _service = service;
         }
 
-        [HttpPost("create")]
-        public async Task<IActionResult> CreateCourse([FromBody] CreateCourseDto createCourseDto)
+        // Kurs qo'shish (faqat teacher yoki admin)
+        [HttpPost]
+        // [Authorize(Roles = "Teacher,Admin")]
+        public async Task<IActionResult> Create([FromBody] CreateCourseDto dto)
         {
-            // Implementation for creating a course
-            await _courseService.CreateCourseAsync(createCourseDto); 
-
-            return Ok(new { message = "Course created successfully" });   
+            var teacherId = GetUserId();
+            var result = await _service.CreateAsync(dto, teacherId);
+            return Ok(result);
         }
-        
+
+        // Barcha kurslar ro'yxati
+        [HttpGet]
+        // [AllowAnonymous]
+        public async Task<IActionResult> GetAll()
+        {
+            var result = await _service.GetAllAsync();
+            return Ok(result);
+        }
+
+        // Bitta kursni olish
+        [HttpGet("{id}")]
+        // [AllowAnonymous]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            var result = await _service.GetByIdAsync(id);
+            if (result == null) return NotFound();
+            return Ok(result);
+        }
+
+        private Guid GetUserId()
+        {
+            var claim = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue("sub");
+            return Guid.Parse(claim);
+        }
+
+       // Kurs o'qituvchisini yangilash
     }
 }

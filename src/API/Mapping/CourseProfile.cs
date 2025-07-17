@@ -1,10 +1,24 @@
 using AutoMapper;
 using Multilevelteam.Platform.Domain.Entities;
+using Multilevelteam.Platform.Application.Dtos;
+using Multilevelteam.Platform.Domain.Enums;
+using Multilevelteam.Platform.Application.Dtos.CourseDtos;
+using Multilevelteam.Platform.Application.Dtos.lessonDtos;
 
-public class CourseProfile : Profile
+namespace Multilevelteam.Platform.Application.Mapping
 {
-    CourseProfile()
+    public class CourseProfile : Profile
     {
-        CreateMap<Course, CreateCourseDto>();
+        public CourseProfile()
+        {
+            CreateMap<Course, CourseDto>()
+                .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type.ToString()))
+                .ForMember(dest => dest.Lessons, opt => opt.MapFrom(src => src.Lessons));
+            CreateMap<CreateCourseDto, Course>();
+
+            CreateMap<Lesson, LessonDto>();
+            CreateMap<CreateLessonDto, Lesson>();
+            CreateMap<Course, CourseTeacherIdDto>().ReverseMap();
+        }
     }
 }

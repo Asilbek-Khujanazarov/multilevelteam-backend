@@ -57,7 +57,7 @@ namespace Multilevelteam.Platform.Infrastructure.Services
             var telegramUser = await _userRepository.GetTelegramUserByPhoneNumberAsync(request.PhoneNumber);
             if (telegramUser == null)
             {
-                return (false, "Iltimos, avval Telegram bot orqali ro'yxatdan o'ting");
+                return (false, "Iltimos, avval Telegram bot orqali ro'yxatdan o'ting @MultilevelTeam_bot");
             }
 
             // Yangi tasdiqlash kodini yaratish
@@ -182,7 +182,7 @@ namespace Multilevelteam.Platform.Infrastructure.Services
             var telegramUser = await _userRepository.GetTelegramUserByPhoneNumberAsync(request.PhoneNumber);
             if (telegramUser == null)
             {
-                return (false, "Iltimos, avval Telegram bot orqali ro'yxatdan o'ting");
+                return (false, "Iltimos, avval Telegram bot orqali ro'yxatdan o'ting @MultilevelTeam_bot");
             }
 
             // Yangi tasdiqlash kodini yaratish
@@ -365,7 +365,7 @@ namespace Multilevelteam.Platform.Infrastructure.Services
             var telegramUser = await _userRepository.GetTelegramUserByPhoneNumberAsync(request.PhoneNumber);
             if (telegramUser == null)
             {
-                return (false, "Telegram orqali ro'yxatdan o'tilmagan");
+                return (false, "Telegram Bot orqali ro'yxatdan o'tilmagan @MultilevelTeam_bot");
             }
 
             // Tasdiqlash kodini yaratish

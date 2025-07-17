@@ -11,6 +11,9 @@ using Telegram.Bot;
 using Microsoft.Extensions.Options;
 using Domain.Interfaces;
 using Microsoft.OpenApi.Models;
+using Multilevelteam.Platform.Application.Mapping;
+using Multilevelteam.Platform.Application.Interfaces;
+using Multilevelteam.Platform.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -103,7 +106,8 @@ builder.Services.AddHttpClient("telegram_bot_client")
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddAutoMapper(typeof(QuestionProfile));
 builder.Services.AddAutoMapper(typeof(ExamProfile)); // mapping uchun
-
+builder.Services.AddAutoMapper(typeof(CourseProfile));
+// Register services
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITelegramBotService, TelegramBotService>();
@@ -116,10 +120,14 @@ builder.Services.AddScoped<IQuestionService, QuestionService>();
 builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
 builder.Services.AddScoped<ITestSessionRepository, TestSessionRepository>();
 builder.Services.AddScoped<ITestSessionService, TestSessionService>();
+builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+builder.Services.AddScoped<ILessonRepository, LessonRepository>();
+builder.Services.AddScoped<ICourseService, CourseService>();
+builder.Services.AddScoped<ILessonService, LessonService>();
 
 // Heroku / hosting porti uchun
-var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
-builder.WebHost.UseUrls($"http://*:{port}");
+// var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+// builder.WebHost.UseUrls($"http://*:{port}");
 
 var app = builder.Build();
 

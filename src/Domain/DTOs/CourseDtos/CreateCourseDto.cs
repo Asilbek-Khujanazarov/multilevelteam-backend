@@ -1,11 +1,17 @@
+using System;
+using System.Collections.Generic;
 using Multilevelteam.Platform.Domain.Enums;
+using Multilevelteam.Platform.Migrations;
 
-public class CreateCourseDto
+namespace Multilevelteam.Platform.Application.Dtos.CourseDtos
 {
-    public string Title { get; set; }
-    public string Description { get; set; }
-    public CourseType Type { get; set; }
-    public decimal Price { get; set; }
-    public Guid TeacherId { get; set; }
-    // public string? CoverImageUrl { get; set; }
+     public class CreateCourseDto
+    {
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public CourseType Type { get; set; }
+        public decimal Price { get; set; }
+        // public string CoverImageUrl { get; set; }
+    }
+
 }

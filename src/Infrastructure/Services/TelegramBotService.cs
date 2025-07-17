@@ -73,7 +73,7 @@ namespace Multilevelteam.Platform.Infrastructure.Services
             try
             {
                 var message = $"Assalomu alaykum, *{firstName}*!\n\n" +
-                            "Multilevelteam.tech platformasining rasmiy botiga xush kelibsiz. 🚗\n\n" +
+                            "Multilevelteam.uz platformasining rasmiy botiga xush kelibsiz. 🚗\n\n" +
                             "Platformada ro'yxatdan o'tish va tizimga kirish uchun " +
                             "telefon raqamingizni ulashishingiz kerak bo'ladi.\n\n" +
                             "Telefon raqamingizni ulashish uchun quyidagi tugmani bosing 👇";
@@ -187,7 +187,7 @@ namespace Multilevelteam.Platform.Infrastructure.Services
         private async Task HandleHelpCommandAsync(Message message)
         {
             var helpMessage = 
-                "*Multilevelteam.tech Bot Yordam*\n\n" +
+                "*Multilevelteam.uz Bot Yordam*\n\n" +
                 "🤖 Bot buyruqlari:\n\n" +
                 "• /start - Botni qayta ishga tushirish\n" +
                 "• /help - Ushbu yordam xabarini ko'rsatish\n" +
@@ -200,7 +200,7 @@ namespace Multilevelteam.Platform.Infrastructure.Services
                 "• Bot orqali yuboriladi\n" +
                 "• 5 daqiqa davomida amal qiladi\n\n" +
                 "❓ Qo'shimcha savollar bo'lsa:\n" +
-                "• support@Multilevelteam.tech";
+                "• multilevelteam.uz@gmail.com ga murojaat qiling";
 
             await _botClient.SendTextMessageAsync(
                 chatId: message.Chat.Id,
@@ -218,7 +218,7 @@ namespace Multilevelteam.Platform.Infrastructure.Services
             {
                 await _botClient.SendTextMessageAsync(
                     chatId: message.Chat.Id,
-                    text: "Siz hali Avtotest.tech platformadan ro'yxatdan o'tmagansiz. Ro'yxatdan o'tish uchun /start buyrug'ini bosing.");
+                    text: "Siz hali multilevelteam.uz platformadan ro'yxatdan o'tmagansiz. Ro'yxatdan o'tish uchun /start buyrug'ini bosing.");
                 return;
             }
 
@@ -226,7 +226,7 @@ namespace Multilevelteam.Platform.Infrastructure.Services
             {
                 await _botClient.SendTextMessageAsync(
                     chatId: message.Chat.Id,
-                    text: "Siz hali Avtotest.tech platformadan ro'yxatdan o'tmagansiz. Ro'yxatdan o'tish uchun /start buyrug'ini bosing.");
+                    text: "Siz hali multilevelteam.uz platformadan ro'yxatdan o'tmagansiz. Ro'yxatdan o'tish uchun /start buyrug'ini bosing.");
                 return;
             }
 
@@ -279,7 +279,7 @@ namespace Multilevelteam.Platform.Infrastructure.Services
                 {
                     var responseMessage = "✅ Telefon raqamingiz muvaffaqiyatli saqlandi.\n\n" +
                   "Endi siz platformada ro'yxatdan o'tishingiz yoki tizimga kirishingiz mumkin.\n\n" +
-                        "Platformaga o'tish uchun: https://Multilevelteam.tech";
+                        "Platformaga o'tish uchun: https://www.multilevelteam.uz";
 
             await _botClient.SendTextMessageAsync(
                 chatId: message.Chat.Id,
@@ -296,7 +296,7 @@ namespace Multilevelteam.Platform.Infrastructure.Services
                         "Iltimos, quyidagi qadamlarni bajarib ko'ring:\n" +
                         "1. Botni qayta ishga tushiring (/start)\n" +
                         "2. Telefon raqamingizni qayta ulashing\n" +
-                        "3. Agar muammo davom etsa, support@Multilevelteam.tech ga xabar bering";
+                        "3. Agar muammo davom etsa, multilevelteam.uz@gmail.com ga xabar bering";
 
                     await _botClient.SendTextMessageAsync(
                         chatId: message.Chat.Id,
@@ -313,7 +313,7 @@ namespace Multilevelteam.Platform.Infrastructure.Services
                     "Iltimos, quyidagi qadamlarni bajarib ko'ring:\n" +
                     "1. Botni qayta ishga tushiring (/start)\n" +
                     "2. Telefon raqamingizni qayta ulashing\n" +
-                    "3. Agar muammo davom etsa, supportMultilevelteam@gmail.com ga xabar bering";
+                    "3. Agar muammo davom etsa, multilevelteam.uz@gmail.com ga xabar bering";
 
                 await _botClient.SendTextMessageAsync(
                     chatId: message.Chat.Id,
