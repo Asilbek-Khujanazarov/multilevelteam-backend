@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "/QCQ+MhFQSw=",
+  "dgSpecHash": "C4X3yOi3k4I=",
   "success": true,
-  "projectFilePath": "C:\\Multilevel Team\\Multilevelteam.Platform\\Multilevelteam.Platform.csproj",
+  "projectFilePath": "D:\\multilevelteam-backend\\Multilevelteam.Platform.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Asus\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\Asus\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",

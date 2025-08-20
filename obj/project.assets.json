@@ -8197,11 +8197,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Multilevel Team\\Multilevelteam.Platform\\Multilevelteam.Platform.csproj",
+      "projectUniqueName": "D:\\multilevelteam-backend\\Multilevelteam.Platform.csproj",
       "projectName": "Multilevelteam.Platform",
-      "projectPath": "C:\\Multilevel Team\\Multilevelteam.Platform\\Multilevelteam.Platform.csproj",
+      "projectPath": "D:\\multilevelteam-backend\\Multilevelteam.Platform.csproj",
       "packagesPath": "C:\\Users\\Asus\\.nuget\\packages\\",
-      "outputPath": "C:\\Multilevel Team\\Multilevelteam.Platform\\obj\\",
+      "outputPath": "D:\\multilevelteam-backend\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Asus\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -8228,7 +8228,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.200"
+      "SdkAnalysisLevel": "9.0.300"
     },
     "frameworks": {
       "net9.0": {
@@ -8308,7 +8308,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
