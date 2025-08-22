@@ -126,8 +126,8 @@ builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<ILessonService, LessonService>();
 
 // Heroku / hosting porti uchun
-var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
-builder.WebHost.UseUrls($"http://*:{port}");
+// var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+// builder.WebHost.UseUrls($"http://*:{port}");
 
 var app = builder.Build();
 

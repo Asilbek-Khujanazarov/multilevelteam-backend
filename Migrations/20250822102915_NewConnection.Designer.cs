@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Multilevelteam.Platform.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250708131132_Course")]
-    partial class Course
+    [Migration("20250822102915_NewConnection")]
+    partial class NewConnection
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

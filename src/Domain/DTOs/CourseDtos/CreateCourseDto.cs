@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Multilevelteam.Platform.Domain.Enums;
-using Multilevelteam.Platform.Migrations;
 
 namespace Multilevelteam.Platform.Application.Dtos.CourseDtos
 {

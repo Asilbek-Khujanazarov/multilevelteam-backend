@@ -30,5 +30,36 @@ namespace Multilevelteam.Platform.Infrastructure.Data
             _context.Courses.Update(course);
             await _context.SaveChangesAsync();
         }
+        public async Task<bool> UpdateTeacherAsync(Guid courseId, Guid teacherId)
+        {
+            var course = await _context.Courses.FirstOrDefaultAsync(c => c.Id == courseId);
+            if (course == null) return false;
+
+            // ✅ Teacher mavjudligini tekshirish
+            var teacher = await _context.Users.FirstOrDefaultAsync(u => u.Id == teacherId);
+            if (teacher == null)
+                throw new Exception("Bunday Teacher mavjud emas!");
+
+            course.TeacherId = teacherId;
+            course.UpdatedAt = DateTime.UtcNow;
+
+            _context.Courses.Update(course);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+
+        public async Task<bool> DeleteAsync(Guid id)
+        {
+            var course = await _context.Courses.FirstOrDefaultAsync(c => c.Id == id);
+            if (course == null) return false;
+
+            _context.Courses.Remove(course);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+
+
     }
 }

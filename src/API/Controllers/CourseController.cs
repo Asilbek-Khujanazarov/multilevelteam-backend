@@ -1,11 +1,10 @@
-using Microsoft.AspNetCore.Authorization;
+
 using Microsoft.AspNetCore.Mvc;
-using Multilevelteam.Platform.Application.Dtos;
 using Multilevelteam.Platform.Application.Dtos.CourseDtos;
+using Multilevelteam.Platform.Application.Dtos.CourseUpdateDtos;
 using Multilevelteam.Platform.Application.Interfaces;
-using System;
 using System.Security.Claims;
-using System.Threading.Tasks;
+
 
 namespace Multilevelteam.Platform.API.Controllers
 {
@@ -48,12 +47,47 @@ namespace Multilevelteam.Platform.API.Controllers
             return Ok(result);
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCourse(Guid id, [FromBody] CourseUpdateDto dto)
+        {
+            if (id != dto.Id) return BadRequest("Id mos emas!");
+
+            var updateCourse = await _service.UpdateAsync(dto);
+            if (updateCourse == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(updateCourse);
+        }
+
+        [HttpPut("{id}/teacher")]
+        public async Task<IActionResult> UpdateTeacher(Guid id, [FromBody] CourseTeacherIdDto dto)
+        {
+            var result = await _service.UpdateTeacherAsync(id, dto);
+
+            if (!result)
+                return NotFound(new { message = "Kurs topilmadi" });
+
+            return NoContent(); // ✅ Muvaffaqiyatli yangilandi
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var result = await _service.DeleteAsync(id);
+
+            if (!result)
+                return NotFound(new { message = "Kurs topilmadi" });
+
+            return NoContent(); // ✅ 204 – muvaffaqiyatli o‘chirildi
+        }
         private Guid GetUserId()
         {
             var claim = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue("sub");
             return Guid.Parse(claim);
         }
 
-       // Kurs o'qituvchisini yangilash
+
+        // Kurs o'qituvchisini yangilash
     }
 }

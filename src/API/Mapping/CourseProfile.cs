@@ -4,6 +4,7 @@ using Multilevelteam.Platform.Application.Dtos;
 using Multilevelteam.Platform.Domain.Enums;
 using Multilevelteam.Platform.Application.Dtos.CourseDtos;
 using Multilevelteam.Platform.Application.Dtos.lessonDtos;
+using Multilevelteam.Platform.Application.Dtos.CourseUpdateDtos;
 
 namespace Multilevelteam.Platform.Application.Mapping
 {
@@ -19,6 +20,7 @@ namespace Multilevelteam.Platform.Application.Mapping
             CreateMap<Lesson, LessonDto>();
             CreateMap<CreateLessonDto, Lesson>();
             CreateMap<Course, CourseTeacherIdDto>().ReverseMap();
+            CreateMap<Course, CourseUpdateDto>().ReverseMap();
         }
     }
 }
